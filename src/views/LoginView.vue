@@ -41,7 +41,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { signInWithEmail } from '../supabase'
+import { signInWithEmail, waitForAuthSession } from '../supabase'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -54,16 +54,20 @@ const loading = ref(false)
 async function handleLogin() {
   error.value = ''
   loading.value = true
-  const { data, error: err } = await signInWithEmail(email.value, password.value)
-  loading.value = false
-  if (err) {
-    error.value = err.message || 'فشل تسجيل الدخول'
-    return
+  try {
+    const { data, error: err } = await signInWithEmail(email.value, password.value)
+    if (err) {
+      error.value = err.message || 'فشل تسجيل الدخول'
+      return
+    }
+    await waitForAuthSession()
+    auth.setSession(data.user, null)
+    await auth.fetchUser()
+    if (auth.isAdmin) router.push({ name: 'Admin' })
+    else if (auth.isActive) router.push({ name: 'Dashboard' })
+    else router.push({ name: 'Home', query: { message: 'pending' } })
+  } finally {
+    loading.value = false
   }
-  auth.setSession(data.user, null)
-  await auth.fetchUser()
-  if (auth.isAdmin) router.push({ name: 'Admin' })
-  else if (auth.isActive) router.push({ name: 'Dashboard' })
-  else router.push({ name: 'Home', query: { message: 'pending' } })
 }
 </script>

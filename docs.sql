@@ -27,3 +27,13 @@ CREATE POLICY "users_can_insert_own_profile"
 ON profiles
 FOR INSERT
 WITH CHECK (auth.uid() = id);
+
+CREATE POLICY "users_can_select_own_profile"
+ON profiles
+FOR SELECT
+USING (auth.uid() = id);
+
+CREATE POLICY "admins_can_select_profiles"
+ON profiles
+FOR SELECT
+USING ((SELECT role FROM profiles WHERE id = auth.uid()) = 'admin');

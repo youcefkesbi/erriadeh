@@ -15,6 +15,42 @@ export async function signUpWithEmail(email, password) {
   return { data, error }
 }
 
+/** Ensure client uses this session for subsequent RLS requests (call after signUp). */
+export async function setAuthSession(session) {
+  if (!session) return { error: { message: 'لا يوجد session' } }
+  const { error } = await supabase.auth.setSession({
+    access_token: session.access_token,
+    refresh_token: session.refresh_token,
+  })
+  return { error }
+}
+
+/**
+ * Wait for Supabase Auth to confirm the session (onAuthStateChange) before doing .select() or other RLS calls.
+ * Call after signUp/setSession or signIn so the client has applied the session before the next request.
+ * @param timeoutMs - max wait before falling back to getSession()
+ * @returns Promise<{ session }> resolves when session is confirmed
+ */
+export function waitForAuthSession(timeoutMs = 5000) {
+  return new Promise((resolve, reject) => {
+    let settled = false
+    const finish = (session) => {
+      if (settled) return
+      settled = true
+      clearTimeout(timer)
+      subscription.unsubscribe()
+      if (session) resolve({ session })
+      else reject(new Error('Auth confirmation timeout'))
+    }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) finish(session)
+    })
+    const timer = setTimeout(() => {
+      supabase.auth.getSession().then(({ data: { session } }) => finish(session))
+    }, timeoutMs)
+  })
+}
+
 export async function signInWithEmail(email, password) {
   const { data, error } = await supabase.auth.signInWithPassword({ email, password })
   return { data, error }
@@ -33,20 +69,21 @@ export function onAuthStateChange(callback) {
 }
 
 /**
- * Profile: create after signup (RLS: INSERT with auth.uid() = id)
+ * Profile: create after signup. RLS: INSERT allowed when auth.uid() = id.
+ * Use transcript_url: '' for initial insert; set transcript_url after upload via updateMyProfile.
  */
 export async function createProfile({ id, full_name, email, graduation_year, phone, transcript_url }) {
   const { data, error } = await supabase
     .from('profiles')
     .insert({
       id,
-      full_name,
-      email,
+      full_name: full_name?.trim() ?? '',
+      email: email?.trim() ?? '',
       graduation_year: Number(graduation_year),
-      phone,
+      phone: phone?.trim() ?? '',
       role: 'student',
       status: 'pending',
-      transcript_url: transcript_url || '',
+      transcript_url: transcript_url ?? '',
     })
     .select()
     .single()
@@ -116,9 +153,22 @@ export async function getAnnouncements() {
   return { data, error }
 }
 
+/** MIME fallback by extension when file.type is empty (e.g. some mobile browsers). */
+const MIME_BY_EXT = {
+  pdf: 'application/pdf',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  gif: 'image/gif',
+  webp: 'image/webp',
+  heic: 'image/heic',
+}
+
 /**
  * Storage: upload transcript (PDF or image) to public bucket.
- * Returns public URL on success. Uses current auth so storage RLS can allow upload.
+ * Path: Transcript/{user.id}.{file_extension} — uses file's real extension.
+ * Sends contentType to avoid 406 when serving the file.
+ * Returns public URL on success. RLS: auth required for upload.
  */
 export async function uploadTranscript(file) {
   const {
@@ -129,12 +179,18 @@ export async function uploadTranscript(file) {
     return { data: null, error: userError || { message: 'يجب تسجيل الدخول أولاً' } }
   }
   const userId = user.id
-  const ext = (file.name && file.name.split('.').pop()) || 'bin'
-  const safeExt = ext.replace(/[^a-zA-Z0-9]/g, '') || 'file'
-  const path = `${userId}/${Date.now()}.${safeExt}`
+
+  const parts = file.name && file.name.trim().split('.')
+  const rawExt = parts && parts.length > 1 ? parts.pop().toLowerCase() : ''
+  const fileExtension = (rawExt && rawExt.replace(/[^a-z0-9]/g, '')) || 'bin'
+  const path = `${userId}.${fileExtension}`
+
+  const contentType =
+    (file.type && file.type.trim()) || MIME_BY_EXT[fileExtension] || 'application/octet-stream'
 
   const { error } = await supabase.storage.from(BUCKET_TRANSCRIPT).upload(path, file, {
-    upsert: false,
+    upsert: true,
+    contentType,
   })
   if (error) return { data: null, error }
 

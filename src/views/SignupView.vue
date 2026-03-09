@@ -85,7 +85,14 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { signUpWithEmail, createProfile, uploadTranscript, updateMyProfile } from '../supabase'
+import {
+  signUpWithEmail,
+  setAuthSession,
+  waitForAuthSession,
+  createProfile,
+  uploadTranscript,
+  updateMyProfile,
+} from '../supabase'
 
 const router = useRouter()
 const auth = useAuthStore()
@@ -112,15 +119,32 @@ async function handleSignup() {
   }
   loading.value = true
   try {
+    // 1. Supabase Auth signup
     const { data: signUpData, error: signUpErr } = await signUpWithEmail(email.value, password.value)
     if (signUpErr) {
-      error.value = signUpErr.message || 'فشل إنشاء الحساب'
-      loading.value = false
+      error.value = signUpErr.message || 'فشل إنشاء الحساب. تحقق من البريد وكلمة المرور.'
       return
     }
-    const userId = signUpData.user.id
+    const userId = signUpData.user?.id
+    if (!userId) {
+      error.value = 'لم يتم إنشاء الحساب. جرّب مرة أخرى أو تواصل مع الإدارة.'
+      return
+    }
 
-    // Create profile first (transcript_url empty); RLS: auth.uid() = id on INSERT
+    // 2. Ensure client has session for RLS (insert/update must see auth.uid() = id)
+    if (signUpData.session) {
+      const { error: sessionErr } = await setAuthSession(signUpData.session)
+      if (sessionErr) {
+        error.value = 'حدث خطأ في تفعيل الجلسة. جرّب تسجيل الدخول يدوياً.'
+        return
+      }
+      await waitForAuthSession()
+    } else {
+      error.value = 'يبدو أن تفعيل البريد مطلوب. تحقق من بريدك واضغط الرابط ثم سجّل الدخول.'
+      return
+    }
+
+    // 3. Insert profile row (RLS: user can insert only their own row, auth.uid() = id)
     const { error: profileErr } = await createProfile({
       id: userId,
       full_name: fullName.value.trim(),
@@ -130,29 +154,25 @@ async function handleSignup() {
       transcript_url: '',
     })
     if (profileErr) {
-      error.value = profileErr.message || 'فشل حفظ الملف الشخصي'
-      loading.value = false
+      error.value = profileErr.message || 'فشل حفظ الملف الشخصي. تواصل مع الإدارة.'
       return
     }
 
-    // Upload to public bucket (session already set after signUp)
+    // 4. Upload transcript to public bucket: Transcript/{user.id}.{file_extension}
     const { data: publicUrl, error: uploadErr } = await uploadTranscript(transcriptFile.value)
     if (uploadErr) {
-      error.value = 'فشل رفع الملف. تأكد من اتصالك أو جرّب لاحقاً.'
-      loading.value = false
+      error.value = 'فشل رفع الملف: ' + (uploadErr.message || 'تحقق من اتصالك وجرّب لاحقاً.')
       return
     }
     if (!publicUrl) {
       error.value = 'لم نتمكن من الحصول على رابط الملف بعد الرفع.'
-      loading.value = false
       return
     }
 
-    // Save transcript URL via RLS-safe update (auth.uid() = id)
+    // 5. Update profiles.transcript_url (RLS: user can update only their own row)
     const { error: updateErr } = await updateMyProfile({ transcript_url: publicUrl })
     if (updateErr) {
       error.value = 'تم رفع الملف لكن حدث خطأ في حفظ الرابط. تواصل مع الإدارة.'
-      loading.value = false
       return
     }
 
@@ -167,6 +187,8 @@ async function handleSignup() {
       transcript_url: publicUrl,
     })
     router.push({ name: 'Home', query: { message: 'pending' } })
+  } catch (err) {
+    error.value = err?.message || 'حدث خطأ غير متوقع. جرّب مرة أخرى.'
   } finally {
     loading.value = false
   }
