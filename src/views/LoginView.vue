@@ -66,6 +66,8 @@ async function handleLogin() {
     if (auth.isAdmin) router.push({ name: 'Admin' })
     else if (auth.isActive) router.push({ name: 'Dashboard' })
     else router.push({ name: 'Home', query: { message: 'pending' } })
+  } catch (e) {
+    error.value = e?.message || 'حدث خطأ غير متوقع. جرّب مرة أخرى.'
   } finally {
     loading.value = false
   }

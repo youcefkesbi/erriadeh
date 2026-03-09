@@ -33,7 +33,52 @@ ON profiles
 FOR SELECT
 USING (auth.uid() = id);
 
+-- RLS fix: avoid recursive policy. (SELECT role FROM profiles ...) triggers RLS on profiles again → 500.
+-- Use a SECURITY DEFINER function so the role check does not go through RLS.
+CREATE OR REPLACE FUNCTION public.current_user_is_admin()
+RETURNS boolean
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+STABLE
+AS $$
+  SELECT EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin');
+$$;
+
+-- Drop the old policy that caused 500, then recreate using the function.
+DROP POLICY IF EXISTS "admins_can_select_profiles" ON profiles;
 CREATE POLICY "admins_can_select_profiles"
 ON profiles
 FOR SELECT
-USING ((SELECT role FROM profiles WHERE id = auth.uid()) = 'admin');
+USING (public.current_user_is_admin());
+
+-- Storage bucket "Transcript": allow authenticated users to upload to their own folder.
+-- Path format used by app: {user_id}/{user_id}.{ext} so first path segment = auth.uid().
+-- In Supabase Dashboard: Storage → Transcript → Policies → New policy.
+-- For INSERT: (bucket_id = 'Transcript') AND ((storage.foldername(name))[1] = auth.uid()::text)
+-- For SELECT (public read): (bucket_id = 'Transcript') if bucket is public, or same folder check for private.
+
+-- Allow users to insert/upload their own file
+CREATE POLICY "users_can_upload_own_file"
+ON storage.objects
+FOR INSERT
+WITH CHECK (
+  bucket_id = 'Transcript' AND
+  auth.uid() = (split_part(name, '/', 1))::uuid
+);
+
+CREATE POLICY "users_can_read_own_file"
+ON storage.objects
+FOR SELECT
+USING (
+  bucket_id = 'Transcript' AND
+  auth.uid() = (split_part(name, '/', 1))::uuid
+);
+
+-- Admin SELECT (see all files)
+CREATE POLICY "admins_can_read_files"
+ON storage.objects
+FOR SELECT
+USING (
+  public.current_user_is_admin()
+);

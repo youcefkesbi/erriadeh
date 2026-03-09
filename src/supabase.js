@@ -15,38 +15,52 @@ export async function signUpWithEmail(email, password) {
   return { data, error }
 }
 
-/** Ensure client uses this session for subsequent RLS requests (call after signUp). */
-export async function setAuthSession(session) {
-  if (!session) return { error: { message: 'لا يوجد session' } }
-  const { error } = await supabase.auth.setSession({
-    access_token: session.access_token,
-    refresh_token: session.refresh_token,
-  })
-  return { error }
-}
-
 /**
- * Wait for Supabase Auth to confirm the session (onAuthStateChange) before doing .select() or other RLS calls.
- * Call after signUp/setSession or signIn so the client has applied the session before the next request.
- * @param timeoutMs - max wait before falling back to getSession()
+ * Wait for Supabase Auth to confirm the session before doing .select() or other RLS calls.
+ * Call after signUp/setSession or signIn. Tries getSession() first, then onAuthStateChange, then timeout fallback.
+ * @param timeoutMs - max wait before rejecting
  * @returns Promise<{ session }> resolves when session is confirmed
  */
 export function waitForAuthSession(timeoutMs = 5000) {
   return new Promise((resolve, reject) => {
     let settled = false
+    let subscription
     const finish = (session) => {
       if (settled) return
       settled = true
       clearTimeout(timer)
-      subscription.unsubscribe()
+      if (subscription) subscription.unsubscribe()
       if (session) resolve({ session })
       else reject(new Error('Auth confirmation timeout'))
     }
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription: sub } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) finish(session)
     })
+    subscription = sub
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        if (session) finish(session)
+      })
+      .catch((err) => {
+        if (!settled) {
+          settled = true
+          clearTimeout(timer)
+          if (subscription) subscription.unsubscribe()
+          reject(err)
+        }
+      })
     const timer = setTimeout(() => {
-      supabase.auth.getSession().then(({ data: { session } }) => finish(session))
+      supabase.auth
+        .getSession()
+        .then(({ data: { session } }) => finish(session))
+        .catch((err) => {
+          if (!settled) {
+            settled = true
+            if (subscription) subscription.unsubscribe()
+            reject(err)
+          }
+        })
     }, timeoutMs)
   })
 }
@@ -116,7 +130,7 @@ export async function getProfile(userId) {
     .from('profiles')
     .select('*')
     .eq('id', userId)
-    .single()
+    .maybeSingle()
   return { data, error }
 }
 
@@ -166,9 +180,9 @@ const MIME_BY_EXT = {
 
 /**
  * Storage: upload transcript (PDF or image) to public bucket.
- * Path: Transcript/{user.id}.{file_extension} — uses file's real extension.
- * Sends contentType to avoid 406 when serving the file.
- * Returns public URL on success. RLS: auth required for upload.
+ * Path: Transcript/{user.id}/{user.id}.{file_extension} so RLS can allow by folder (storage.foldername(name))[1] = auth.uid().
+ * Uses file's real extension and contentType to avoid 406 when serving.
+ * Returns public URL on success.
  */
 export async function uploadTranscript(file) {
   const {
@@ -183,7 +197,7 @@ export async function uploadTranscript(file) {
   const parts = file.name && file.name.trim().split('.')
   const rawExt = parts && parts.length > 1 ? parts.pop().toLowerCase() : ''
   const fileExtension = (rawExt && rawExt.replace(/[^a-z0-9]/g, '')) || 'bin'
-  const path = `${userId}.${fileExtension}`
+  const path = `${userId}/${userId}.${fileExtension}`
 
   const contentType =
     (file.type && file.type.trim()) || MIME_BY_EXT[fileExtension] || 'application/octet-stream'

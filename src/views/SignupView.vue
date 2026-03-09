@@ -69,6 +69,7 @@
           <p class="text-xs text-slate-500 mt-1">صورة أو PDF لكشف الدرجات</p>
         </div>
         <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
+        <p v-if="loading && step" class="text-sm text-slate-500 mt-1">{{ step }}</p>
         <button
           type="submit"
           :disabled="loading"
@@ -87,8 +88,6 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import {
   signUpWithEmail,
-  setAuthSession,
-  waitForAuthSession,
   createProfile,
   uploadTranscript,
   updateMyProfile,
@@ -105,92 +104,115 @@ const phone = ref('')
 const transcriptFile = ref(null)
 const error = ref('')
 const loading = ref(false)
+const step = ref('')
+const SIGNUP_TIMEOUT_MS = 20000
+const STEP_TIMEOUT_MS = 15000
 
 function onFileChange(e) {
   const file = e.target.files?.[0]
   transcriptFile.value = file || null
 }
 
+function timeoutPromise(ms, message) {
+  return new Promise((_, reject) => {
+    setTimeout(() => reject(new Error(message)), ms)
+  })
+}
+
+function withTimeout(promise, ms, message) {
+  return Promise.race([promise, timeoutPromise(ms, message)])
+}
+
 async function handleSignup() {
   error.value = ''
+  step.value = ''
   if (!transcriptFile.value) {
     error.value = 'يرجى رفع صورة كشف الدرجات'
     return
   }
   loading.value = true
   try {
-    // 1. Supabase Auth signup
-    const { data: signUpData, error: signUpErr } = await signUpWithEmail(email.value, password.value)
-    if (signUpErr) {
-      error.value = signUpErr.message || 'فشل إنشاء الحساب. تحقق من البريد وكلمة المرور.'
-      return
-    }
-    const userId = signUpData.user?.id
-    if (!userId) {
-      error.value = 'لم يتم إنشاء الحساب. جرّب مرة أخرى أو تواصل مع الإدارة.'
-      return
-    }
-
-    // 2. Ensure client has session for RLS (insert/update must see auth.uid() = id)
-    if (signUpData.session) {
-      const { error: sessionErr } = await setAuthSession(signUpData.session)
-      if (sessionErr) {
-        error.value = 'حدث خطأ في تفعيل الجلسة. جرّب تسجيل الدخول يدوياً.'
-        return
+    const signupFlow = (async () => {
+      step.value = 'جاري إنشاء الحساب...'
+      const { data: signUpData, error: signUpErr } = await withTimeout(
+        signUpWithEmail(email.value, password.value),
+        STEP_TIMEOUT_MS,
+        'انتهت المهلة عند إنشاء الحساب. تحقق من اتصالك.'
+      )
+      if (signUpErr) {
+        throw new Error(signUpErr.message || 'فشل إنشاء الحساب. تحقق من البريد وكلمة المرور.')
       }
-      await waitForAuthSession()
-    } else {
-      error.value = 'يبدو أن تفعيل البريد مطلوب. تحقق من بريدك واضغط الرابط ثم سجّل الدخول.'
-      return
-    }
+      const userId = signUpData.user?.id
+      if (!userId) {
+        throw new Error('لم يتم إنشاء الحساب. جرّب مرة أخرى أو تواصل مع الإدارة.')
+      }
+      if (!signUpData.session) {
+        throw new Error('يبدو أن تفعيل البريد مطلوب. تحقق من بريدك واضغط الرابط ثم سجّل الدخول.')
+      }
+      // Supabase sets the session automatically on signUp; no manual setSession.
 
-    // 3. Insert profile row (RLS: user can insert only their own row, auth.uid() = id)
-    const { error: profileErr } = await createProfile({
-      id: userId,
-      full_name: fullName.value.trim(),
-      email: email.value.trim(),
-      graduation_year: graduationYear.value,
-      phone: phone.value.trim(),
-      transcript_url: '',
-    })
-    if (profileErr) {
-      error.value = profileErr.message || 'فشل حفظ الملف الشخصي. تواصل مع الإدارة.'
-      return
-    }
+      step.value = 'جاري حفظ الملف الشخصي...'
+      const { error: profileErr } = await withTimeout(
+        createProfile({
+          id: userId,
+          full_name: fullName.value.trim(),
+          email: email.value.trim(),
+          graduation_year: graduationYear.value,
+          phone: phone.value.trim(),
+          transcript_url: '',
+        }),
+        STEP_TIMEOUT_MS,
+        'انتهت المهلة عند حفظ الملف الشخصي. تحقق من اتصالك وإعدادات RLS في Supabase.'
+      )
+      if (profileErr) {
+        throw new Error(profileErr.message || 'فشل حفظ الملف الشخصي. تواصل مع الإدارة.')
+      }
 
-    // 4. Upload transcript to public bucket: Transcript/{user.id}.{file_extension}
-    const { data: publicUrl, error: uploadErr } = await uploadTranscript(transcriptFile.value)
-    if (uploadErr) {
-      error.value = 'فشل رفع الملف: ' + (uploadErr.message || 'تحقق من اتصالك وجرّب لاحقاً.')
-      return
-    }
-    if (!publicUrl) {
-      error.value = 'لم نتمكن من الحصول على رابط الملف بعد الرفع.'
-      return
-    }
+      step.value = 'جاري رفع الملف...'
+      const { data: publicUrl, error: uploadErr } = await withTimeout(
+        uploadTranscript(transcriptFile.value),
+        STEP_TIMEOUT_MS,
+        'انتهت المهلة عند رفع الملف. تحقق من اتصالك وإعدادات Storage في Supabase.'
+      )
+      if (uploadErr) {
+        throw new Error('فشل رفع الملف: ' + (uploadErr.message || 'تحقق من اتصالك وجرّب لاحقاً.'))
+      }
+      if (!publicUrl) {
+        throw new Error('لم نتمكن من الحصول على رابط الملف بعد الرفع.')
+      }
 
-    // 5. Update profiles.transcript_url (RLS: user can update only their own row)
-    const { error: updateErr } = await updateMyProfile({ transcript_url: publicUrl })
-    if (updateErr) {
-      error.value = 'تم رفع الملف لكن حدث خطأ في حفظ الرابط. تواصل مع الإدارة.'
-      return
-    }
+      step.value = 'جاري حفظ الرابط...'
+      const { error: updateErr } = await withTimeout(
+        updateMyProfile({ transcript_url: publicUrl }),
+        STEP_TIMEOUT_MS,
+        'انتهت المهلة عند حفظ الرابط. تحقق من اتصالك.'
+      )
+      if (updateErr) {
+        throw new Error('تم رفع الملف لكن حدث خطأ في حفظ الرابط. تواصل مع الإدارة.')
+      }
 
-    auth.setSession(signUpData.user, {
-      id: userId,
-      full_name: fullName.value.trim(),
-      email: email.value.trim(),
-      graduation_year: Number(graduationYear.value),
-      phone: phone.value.trim(),
-      role: 'student',
-      status: 'pending',
-      transcript_url: publicUrl,
-    })
-    router.push({ name: 'Home', query: { message: 'pending' } })
+      auth.setSession(signUpData.user, {
+        id: userId,
+        full_name: fullName.value.trim(),
+        email: email.value.trim(),
+        graduation_year: Number(graduationYear.value),
+        phone: phone.value.trim(),
+        role: 'student',
+        status: 'pending',
+        transcript_url: publicUrl,
+      })
+      router.push({ name: 'Home', query: { message: 'pending' } })
+    })()
+
+    await Promise.race([
+      signupFlow,
+      timeoutPromise(SIGNUP_TIMEOUT_MS, 'انتهت المهلة. تحقق من اتصالك وجرّب مرة أخرى.'),
+    ])
   } catch (err) {
     error.value = err?.message || 'حدث خطأ غير متوقع. جرّب مرة أخرى.'
   } finally {
     loading.value = false
+    step.value = ''
   }
 }
 </script>
