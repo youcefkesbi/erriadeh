@@ -45,8 +45,6 @@ AS $$
   SELECT EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin');
 $$;
 
--- Drop the old policy that caused 500, then recreate using the function.
-DROP POLICY IF EXISTS "admins_can_select_profiles" ON profiles;
 CREATE POLICY "admins_can_select_profiles"
 ON profiles
 FOR SELECT

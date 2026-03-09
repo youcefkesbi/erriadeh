@@ -167,6 +167,57 @@ export async function getAnnouncements() {
   return { data, error }
 }
 
+/**
+ * Admin: create announcement
+ */
+export async function createAnnouncement({ title, content }) {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+  if (userError || !user) {
+    return { data: null, error: userError || { message: 'يجب تسجيل الدخول أولاً' } }
+  }
+
+  const { data, error } = await supabase
+    .from('announcements')
+    .insert({
+      title: title?.trim() ?? '',
+      content: content?.trim() ?? '',
+      created_by: user.id,
+    })
+    .select()
+    .single()
+  return { data, error }
+}
+
+/**
+ * Admin: update announcement
+ */
+export async function updateAnnouncement(id, { title, content }) {
+  const { data, error } = await supabase
+    .from('announcements')
+    .update({
+      title: title?.trim() ?? '',
+      content: content?.trim() ?? '',
+    })
+    .eq('id', id)
+    .select()
+    .single()
+  return { data, error }
+}
+
+/**
+ * Admin: delete announcement
+ */
+export async function deleteAnnouncement(id) {
+  const { error } = await supabase
+    .from('announcements')
+    .delete()
+    .eq('id', id)
+  return { error }
+}
+
 /** MIME fallback by extension when file.type is empty (e.g. some mobile browsers). */
 const MIME_BY_EXT = {
   pdf: 'application/pdf',
