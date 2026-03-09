@@ -25,67 +25,11 @@
           </router-link>
         </div>
       </div>
-
-      <!-- Announcements (only for logged-in active users; most will see them في لوحة الطالب) -->
-      <section
-        v-if="canViewAnnouncements"
-        class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mt-4"
-      >
-        <h2 class="text-lg font-semibold text-slate-800 mb-3">إعلانات الرابطة</h2>
-        <div v-if="loading" class="text-slate-500 text-sm">جاري تحميل الإعلانات...</div>
-        <div v-else-if="!announcements.length" class="text-slate-500 text-sm">
-          لا توجد إعلانات حالياً.
-        </div>
-        <ul v-else class="space-y-3">
-          <li
-            v-for="a in announcements"
-            :key="a.id"
-            class="border-b border-slate-100 pb-3 last:border-0 last:pb-0"
-          >
-            <h3 class="font-medium text-slate-800 text-sm">{{ a.title }}</h3>
-            <p class="text-xs text-slate-500 mt-0.5">{{ formatDate(a.created_at) }}</p>
-            <p class="text-sm text-slate-600 mt-1 whitespace-pre-wrap">
-              {{ a.content }}
-            </p>
-          </li>
-        </ul>
-      </section>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { getAnnouncements } from '../supabase'
-import { useAuthStore } from '../stores/auth'
-
-const auth = useAuthStore()
-const announcements = ref([])
-const loading = ref(true)
-
-const canViewAnnouncements = computed(() => auth.isAuthenticated && auth.isActive)
-
-function formatDate(iso) {
-  if (!iso) return ''
-  return new Date(iso).toLocaleDateString('ar-SA', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  })
-}
-
-async function loadAnnouncements() {
-  loading.value = true
-  const { data } = await getAnnouncements()
-  announcements.value = data || []
-  loading.value = false
-}
-
-onMounted(() => {
-  if (canViewAnnouncements.value) {
-    loadAnnouncements()
-  } else {
-    loading.value = false
-  }
-})
+// صفحة الهبوط بسيطة: الاسم + زر إنشاء حساب + زر تسجيل الدخول.
+// الإعلانات تظهر فقط داخل لوحة الطالب / لوحة الإدارة للمستخدمين المصادقين.
 </script>
