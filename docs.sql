@@ -80,3 +80,55 @@ FOR SELECT
 USING (
   public.current_user_is_admin()
 );
+
+
+CREATE POLICY "Allow authenticated users to select announcements"
+ON announcements
+FOR SELECT
+USING (
+  auth.role() = 'authenticated'
+);
+
+CREATE POLICY "Admins can insert announcements"
+ON announcements
+FOR INSERT
+WITH CHECK (
+  EXISTS (
+    SELECT 1 
+    FROM profiles 
+    WHERE profiles.id = auth.uid() 
+      AND profiles.role = 'admin'
+  )
+);
+
+CREATE POLICY "Admins can update announcements"
+ON announcements
+FOR UPDATE
+USING (
+  EXISTS (
+    SELECT 1 
+    FROM profiles 
+    WHERE profiles.id = auth.uid() 
+      AND profiles.role = 'admin'
+  )
+)
+WITH CHECK (
+  EXISTS (
+    SELECT 1 
+    FROM profiles 
+    WHERE profiles.id = auth.uid() 
+      AND profiles.role = 'admin'
+  )
+);
+
+CREATE POLICY "Admins can delete announcements"
+ON announcements
+FOR DELETE
+USING (
+  EXISTS (
+    SELECT 1 
+    FROM profiles 
+    WHERE profiles.id = auth.uid() 
+      AND profiles.role = 'admin'
+  )
+);
