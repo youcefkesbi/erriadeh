@@ -1,7 +1,14 @@
 <template>
   <div class="min-h-screen bg-slate-50">
     <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold text-slate-800">لوحة الإدارة - الريادة</h1>
+      <div class="flex items-center gap-2">
+        <img
+          :src="logo"
+          alt="شعار الريادة"
+          class="h-8 w-auto object-contain"
+        />
+        <h1 class="text-xl font-bold text-slate-800">لوحة الإدارة</h1>
+      </div>
       <div class="flex items-center gap-4">
         <span class="text-slate-600">{{ auth.profile?.full_name }} (مدير)</span>
         <button
@@ -179,6 +186,7 @@ import {
   deleteAnnouncement,
   signOut,
 } from '../supabase'
+import logo from '../assets/logo.png'
 
 const router = useRouter()
 const auth = useAuthStore()

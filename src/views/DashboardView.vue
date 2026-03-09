@@ -1,7 +1,14 @@
 <template>
   <div class="min-h-screen bg-slate-50">
     <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center">
-      <h1 class="text-xl font-bold text-slate-800">الريادة</h1>
+      <div class="flex items-center gap-2">
+        <img
+          :src="logo"
+          alt="شعار الريادة"
+          class="h-8 w-auto object-contain"
+        />
+        <h1 class="text-xl font-bold text-slate-800">رابطة خريجي الريادة</h1>
+      </div>
       <div class="flex items-center gap-4">
         <span class="text-slate-600">{{ auth.profile?.full_name }}</span>
         <button
@@ -54,6 +61,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { getAnnouncements } from '../supabase'
 import { signOut } from '../supabase'
+import logo from '../assets/logo.png'
 
 const router = useRouter()
 const auth = useAuthStore()
