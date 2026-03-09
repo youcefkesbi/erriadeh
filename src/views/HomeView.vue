@@ -26,12 +26,15 @@
         </div>
       </div>
 
-      <!-- Public announcements -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+      <!-- Announcements (only for logged-in active users; most will see them في لوحة الطالب) -->
+      <section
+        v-if="canViewAnnouncements"
+        class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 mt-4"
+      >
         <h2 class="text-lg font-semibold text-slate-800 mb-3">إعلانات الرابطة</h2>
         <div v-if="loading" class="text-slate-500 text-sm">جاري تحميل الإعلانات...</div>
         <div v-else-if="!announcements.length" class="text-slate-500 text-sm">
-          لا توجد إعلانات حالياً. تابعنا لاحقاً.
+          لا توجد إعلانات حالياً.
         </div>
         <ul v-else class="space-y-3">
           <li
@@ -52,11 +55,15 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { getAnnouncements } from '../supabase'
+import { useAuthStore } from '../stores/auth'
 
+const auth = useAuthStore()
 const announcements = ref([])
 const loading = ref(true)
+
+const canViewAnnouncements = computed(() => auth.isAuthenticated && auth.isActive)
 
 function formatDate(iso) {
   if (!iso) return ''
@@ -75,6 +82,10 @@ async function loadAnnouncements() {
 }
 
 onMounted(() => {
-  loadAnnouncements()
+  if (canViewAnnouncements.value) {
+    loadAnnouncements()
+  } else {
+    loading.value = false
+  }
 })
 </script>
