@@ -6,6 +6,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 const BUCKET_TRANSCRIPT = 'Transcript'
+const BUCKET_ANNOUNCEMENTS = 'announcements'
 
 /**
  * Auth
@@ -170,7 +171,7 @@ export async function getAnnouncements() {
 /**
  * Admin: create announcement
  */
-export async function createAnnouncement({ title, content }) {
+export async function createAnnouncement({ title, content, image_url }) {
   const {
     data: { user },
     error: userError,
@@ -185,6 +186,7 @@ export async function createAnnouncement({ title, content }) {
       title: title?.trim() ?? '',
       content: content?.trim() ?? '',
       created_by: user.id,
+      image_url: image_url ?? null,
     })
     .select()
     .single()
@@ -194,12 +196,13 @@ export async function createAnnouncement({ title, content }) {
 /**
  * Admin: update announcement
  */
-export async function updateAnnouncement(id, { title, content }) {
+export async function updateAnnouncement(id, { title, content, image_url }) {
   const { data, error } = await supabase
     .from('announcements')
     .update({
       title: title?.trim() ?? '',
       content: content?.trim() ?? '',
+      image_url: image_url ?? null,
     })
     .eq('id', id)
     .select()
@@ -227,6 +230,40 @@ const MIME_BY_EXT = {
   gif: 'image/gif',
   webp: 'image/webp',
   heic: 'image/heic',
+}
+
+/**
+ * Storage: upload announcement image to public \"announcements\" bucket.
+ * Path: announcements/{user.id}/{timestamp}.{ext}
+ * Returns public URL on success.
+ */
+export async function uploadAnnouncementImage(file) {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser()
+  if (userError || !user) {
+    return { data: null, error: userError || { message: 'يجب تسجيل الدخول أولاً' } }
+  }
+  const userId = user.id
+
+  const parts = file.name && file.name.trim().split('.')
+  const rawExt = parts && parts.length > 1 ? parts.pop().toLowerCase() : ''
+  const fileExtension = (rawExt && rawExt.replace(/[^a-z0-9]/g, '')) || 'bin'
+  const path = `${userId}/${Date.now()}.${fileExtension}`
+
+  const contentType =
+    (file.type && file.type.trim()) || MIME_BY_EXT[fileExtension] || 'application/octet-stream'
+
+  const { error } = await supabase.storage.from(BUCKET_ANNOUNCEMENTS).upload(path, file, {
+    upsert: false,
+    contentType,
+  })
+  if (error) return { data: null, error }
+
+  const { data: urlData } = supabase.storage.from(BUCKET_ANNOUNCEMENTS).getPublicUrl(path)
+  const publicUrl = urlData?.publicUrl ?? null
+  return { data: publicUrl, error: null }
 }
 
 /**

@@ -99,6 +99,24 @@
                   placeholder="تفاصيل الإعلان..."
                 ></textarea>
               </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">صورة الإعلان (اختياري)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  @change="onImageChange"
+                  class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-slate-100 file:text-slate-700"
+                />
+                <p class="text-xs text-slate-500 mt-1">اختر صورة خفيفة تمثل الإعلان (اختياري).</p>
+                <div v-if="imagePreview" class="mt-2">
+                  <p class="text-xs text-slate-500 mb-1">معاينة:</p>
+                  <img
+                    :src="imagePreview"
+                    alt="صورة الإعلان"
+                    class="w-full max-h-40 object-cover rounded-md border border-slate-200"
+                  />
+                </div>
+              </div>
               <p v-if="announcementError" class="text-sm text-red-600">{{ announcementError }}</p>
               <div class="flex items-center gap-2">
                 <button
@@ -163,7 +181,14 @@
                     </button>
                   </div>
                 </div>
-                <p class="text-sm text-slate-600 whitespace-pre-wrap">{{ a.content }}</p>
+                <div v-if="a.image_url" class="mt-2">
+                  <img
+                    :src="a.image_url"
+                    alt="صورة الإعلان"
+                    class="w-full max-h-40 object-cover rounded-md border border-slate-100"
+                  />
+                </div>
+                <p class="text-sm text-slate-600 whitespace-pre-wrap mt-1">{{ a.content }}</p>
               </li>
             </ul>
           </div>
@@ -184,6 +209,7 @@ import {
   createAnnouncement,
   updateAnnouncement,
   deleteAnnouncement,
+  uploadAnnouncementImage,
   signOut,
 } from '../supabase'
 import logo from '../assets/logo.png'
@@ -224,6 +250,8 @@ const savingAnnouncement = ref(false)
 const deletingId = ref(null)
 const editingId = ref(null)
 const announcementError = ref('')
+const imageFile = ref(null)
+const imagePreview = ref('')
 
 const form = ref({
   title: '',
@@ -237,6 +265,8 @@ function resetForm() {
   }
   editingId.value = null
   announcementError.value = ''
+  imageFile.value = null
+  imagePreview.value = ''
 }
 
 function formatDate(iso) {
@@ -266,6 +296,18 @@ function startEdit(announcement) {
     content: announcement.content,
   }
   announcementError.value = ''
+  imageFile.value = null
+  imagePreview.value = announcement.image_url || ''
+}
+
+function onImageChange(e) {
+  const file = e.target.files?.[0]
+  if (!file) {
+    imageFile.value = null
+    return
+  }
+  imageFile.value = file
+  imagePreview.value = URL.createObjectURL(file)
 }
 
 async function saveAnnouncement() {
@@ -273,10 +315,24 @@ async function saveAnnouncement() {
   savingAnnouncement.value = true
   announcementError.value = ''
   try {
+    let imageUrlToSave = null
+    if (imageFile.value) {
+      const { data: uploadedUrl, error: uploadErr } = await uploadAnnouncementImage(imageFile.value)
+      if (uploadErr) {
+        announcementError.value = uploadErr.message || 'تعذر رفع صورة الإعلان.'
+        return
+      }
+      imageUrlToSave = uploadedUrl || null
+    } else if (editingId.value) {
+      const existing = announcements.value.find((a) => a.id === editingId.value)
+      imageUrlToSave = existing?.image_url ?? null
+    }
+
     if (editingId.value) {
       const { data, error } = await updateAnnouncement(editingId.value, {
         title: form.value.title,
         content: form.value.content,
+        image_url: imageUrlToSave,
       })
       if (error) {
         announcementError.value = error.message || 'تعذر تحديث الإعلان.'
@@ -289,6 +345,7 @@ async function saveAnnouncement() {
       const { data, error } = await createAnnouncement({
         title: form.value.title,
         content: form.value.content,
+        image_url: imageUrlToSave,
       })
       if (error) {
         announcementError.value = error.message || 'تعذر إنشاء الإعلان.'

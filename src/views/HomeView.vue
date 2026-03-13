@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-slate-50 flex items-center justify-center p-6">
-    <div class="w-full max-w-xl">
-      <div class="text-center">
+    <div class="w-full max-w-2xl">
+      <div class="text-center mb-8">
         <div class="flex flex-col items-center gap-4 mb-4">
           <img
             :src="logo"
@@ -32,12 +32,49 @@
           </router-link>
         </div>
       </div>
+
+      <!-- Landing announcements for guests and users (top 3) -->
+      <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold text-slate-800">آخر الإعلانات</h2>
+          <span class="text-xs text-slate-400" v-if="announcements.length">إجمالي: {{ announcements.length }}</span>
+        </div>
+        <div v-if="loading" class="text-slate-500 text-sm">جاري تحميل الإعلانات...</div>
+        <div v-else-if="!visibleAnnouncements.length" class="text-slate-500 text-sm">
+          لا توجد إعلانات حالياً.
+        </div>
+        <ul v-else class="space-y-3">
+          <li
+            v-for="a in visibleAnnouncements"
+            :key="a.id"
+            class="border-b border-slate-100 pb-3 last:border-0 last:pb-0"
+          >
+            <h3 class="font-medium text-slate-800 text-sm">{{ a.title }}</h3>
+            <p class="text-xs text-slate-500 mt-0.5">{{ formatDate(a.created_at) }}</p>
+            <div v-if="a.image_url" class="mt-2">
+              <img
+                :src="a.image_url"
+                alt="صورة الإعلان"
+                class="w-full max-h-40 object-cover rounded-md border border-slate-100"
+              />
+            </div>
+            <p class="text-sm text-slate-600 mt-1 whitespace-pre-wrap line-clamp-3">
+              {{ a.content }}
+            </p>
+          </li>
+        </ul>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import logo from '../assets/logo.png'
-// صفحة الهبوط بسيطة: الاسم + زر إنشاء حساب + زر تسجيل الدخول.
-// الإعلانات تظهر فقط داخل لوحة الطالب / لوحة الإدارة للمستخدمين المصادقين.
+import { useAnnouncements } from '../composables/useAnnouncements'
+
+const { announcements, loading, formatDate } = useAnnouncements({ autoLoad: true })
+
+// لا نعرض سوى أول 3 إعلانات لتبقى الصفحة نظيفة.
+const visibleAnnouncements = computed(() => announcements.value.slice(0, 3))
 </script>

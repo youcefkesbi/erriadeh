@@ -46,7 +46,14 @@
             class="border-b border-slate-100 pb-4 last:border-0 last:pb-0"
           >
             <h3 class="font-medium text-slate-800">{{ a.title }}</h3>
-            <p class="text-slate-600 text-sm mt-1 whitespace-pre-wrap">{{ a.content }}</p>
+            <div v-if="a.image_url" class="mt-2">
+              <img
+                :src="a.image_url"
+                alt="صورة الإعلان"
+                class="w-full max-h-48 object-cover rounded-md border border-slate-100"
+              />
+            </div>
+            <p class="text-slate-600 text-sm mt-2 whitespace-pre-wrap">{{ a.content }}</p>
             <p class="text-xs text-slate-400 mt-2">{{ formatDate(a.created_at) }}</p>
           </li>
         </ul>
@@ -56,41 +63,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
-import { getAnnouncements } from '../supabase'
 import { signOut } from '../supabase'
+import { useAnnouncements } from '../composables/useAnnouncements'
 import logo from '../assets/logo.png'
 
 const router = useRouter()
 const auth = useAuthStore()
-const announcements = ref([])
-const loading = ref(true)
-
-function formatDate(iso) {
-  if (!iso) return ''
-  return new Date(iso).toLocaleDateString('ar-SA', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-async function loadAnnouncements() {
-  loading.value = true
-  const { data } = await getAnnouncements()
-  announcements.value = data || []
-  loading.value = false
-}
+const { announcements, loading, formatDate } = useAnnouncements({ autoLoad: true })
 
 async function handleLogout() {
   await signOut()
   auth.clearSession()
   router.push({ name: 'Home' })
 }
-
-onMounted(() => {
-  loadAnnouncements()
-})
 </script>

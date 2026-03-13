@@ -14,6 +14,7 @@ create table announcements (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   content text not null,
+  image_url text,
   created_by uuid references profiles(id),
   created_at timestamp with time zone default now()
 );
@@ -82,12 +83,10 @@ USING (
 );
 
 
-CREATE POLICY "Allow authenticated users to select announcements"
+CREATE POLICY "Public can view announcements"
 ON announcements
 FOR SELECT
-USING (
-  auth.role() = 'authenticated'
-);
+USING (true);
 
 CREATE POLICY "Admins can insert announcements"
 ON announcements
@@ -132,3 +131,14 @@ USING (
       AND profiles.role = 'admin'
   )
 );
+
+CREATE POLICY "Authenticated users can upload announcement images"
+ON storage.objects
+FOR INSERT
+TO authenticated
+WITH CHECK (bucket_id = 'announcements');
+
+CREATE POLICY "Public can view announcement images"
+ON storage.objects
+FOR SELECT
+USING (bucket_id = 'announcements');
