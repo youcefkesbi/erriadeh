@@ -72,10 +72,6 @@ router.beforeEach(async (to, from, next) => {
     return next()
   }
 
-  if (to.meta.guest && auth.isAuthenticated && auth.isActive && to.name === 'Home') {
-    return next({ name: 'Dashboard' })
-  }
-
   next()
 })
 
