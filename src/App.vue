@@ -68,7 +68,7 @@
         </div>
         <div class="md:text-left text-center md:flex md:flex-col md:items-end">
           <p class="text-slate-500">© 2026</p>
-          <p class="font-semibold text-slate-800 mt-1">رابطة خريجي مدرسة Erriadeh</p>
+          <p class="font-semibold text-slate-800 mt-1">رابطة خريجي مدرسة الريادة</p>
           <p class="text-slate-500 mt-1">جميع الحقوق محفوظة</p>
         </div>
       </div>
