@@ -18,11 +18,11 @@
       </div>
 
       <article v-else-if="announcement" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-        <div v-if="announcement.image_url" class="border-b border-slate-100">
+        <div v-if="announcement.image_url" class="border-b border-slate-100 bg-slate-50">
           <img
             :src="announcement.image_url"
             alt="صورة الإعلان"
-            class="w-full max-h-[28rem] object-cover"
+            class="w-full max-h-[70vh] object-contain"
           />
         </div>
         <div class="p-6 sm:p-8">
