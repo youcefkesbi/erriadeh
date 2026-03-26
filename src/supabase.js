@@ -168,6 +168,15 @@ export async function getAnnouncements() {
   return { data, error }
 }
 
+export async function getAnnouncementById(id) {
+  const { data, error } = await supabase
+    .from('announcements')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle()
+  return { data, error }
+}
+
 /**
  * Admin: create announcement
  */

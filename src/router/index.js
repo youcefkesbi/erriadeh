@@ -21,6 +21,12 @@ const routes = [
     meta: { guest: true },
   },
   {
+    path: '/announcements/:id',
+    name: 'AnnouncementDetails',
+    component: () => import('../views/AnnouncementDetailsView.vue'),
+    meta: { guest: true },
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../views/LoginView.vue'),
