@@ -48,7 +48,7 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">رقم الهاتف</label>
+          <label class="block text-sm font-medium text-slate-700 mb-1">رقم الهاتف الذي يحتوي على الواتساب</label>
           <input
             v-model="phone"
             type="tel"
