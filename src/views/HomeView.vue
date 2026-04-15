@@ -1,5 +1,13 @@
 <template>
   <div class="bg-gradient-to-b from-slate-50 via-sky-50 to-slate-100">
+    <section class="min-h-[40vh] flex items-center justify-center px-4 sm:px-6 py-10">
+      <img
+        :src="logoImage"
+        alt="شعار مدرسة الريادة"
+        class="w-56 sm:w-72 md:w-[26rem] lg:w-[30rem] h-auto object-contain drop-shadow-sm"
+      />
+    </section>
+
     <!-- 1. Authentication Section -->
     <section class="border-b border-slate-100">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
@@ -128,6 +136,8 @@
 import { computed } from 'vue'
 import { useAnnouncements } from '../composables/useAnnouncements'
 import AnnouncementCard from '../components/AnnouncementCard.vue'
+
+const logoImage = new URL('../assets/logo.png', import.meta.url).href
 
 const { announcements, loading } = useAnnouncements({ autoLoad: true })
 
