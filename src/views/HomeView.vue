@@ -1,146 +1,255 @@
 <template>
-  <div class="bg-gradient-to-b from-slate-50 via-sky-50 to-slate-100">
-    <section class="min-h-[40vh] flex items-center justify-center px-4 sm:px-6 py-10">
-      <img
-        :src="logoImage"
-        alt="شعار مدرسة الريادة"
-        class="w-56 sm:w-72 md:w-[26rem] lg:w-[30rem] h-auto object-contain drop-shadow-sm"
-      />
-    </section>
+  <div class="relative overflow-hidden bg-slate-950 text-slate-100">
+    <div class="pointer-events-none absolute inset-0">
+      <div class="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-sky-500/25 blur-3xl"></div>
+      <div class="absolute top-32 -right-20 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl"></div>
+      <div class="absolute bottom-0 -left-16 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl"></div>
+    </div>
 
-    <!-- 1. Authentication Section -->
-    <section class="border-b border-slate-100">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-        <div
-          class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-sm border border-sky-100 px-6 py-8 sm:px-10 sm:py-10 text-center"
-        >
-          <p class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 text-sky-700 text-xs font-medium mb-4">
-            <span>🎓</span>
-            <span>منصة تجمع خريجي مدرسة الريادة</span>
-          </p>
-          <p class="text-slate-600 mb-4 text-sm sm:text-base">
-            انضم إلى شبكة الخريجين، وابق على اتصال مع زملائك، واطّلع على أحدث الأخبار والفرص.
-          </p>
-          <div
-            v-if="$route.query.message === 'pending'"
-            class="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm max-w-md mx-auto"
-          >
-            طلبك قيد المراجعة. سيتم إبلاغك عند الموافقة على حسابك.
+    <main class="relative z-10 mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10 lg:py-12">
+      <section class="grid gap-5 lg:grid-cols-12">
+        <div class="lg:col-span-8 rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900/95 via-indigo-950/85 to-sky-900/85 p-6 shadow-2xl sm:p-8">
+          <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <p class="inline-flex items-center gap-2 rounded-full border border-sky-300/30 bg-sky-300/10 px-3 py-1 text-xs font-semibold text-sky-100">
+              <span>🏫</span>
+              <span>منصة خريجي مدرسة الريادة</span>
+            </p>
+            <span class="rounded-full border border-fuchsia-300/40 bg-fuchsia-300/15 px-3 py-1 text-xs font-medium text-fuchsia-100">
+              تواصل، فرص، مبادرات
+            </span>
           </div>
-          <div class="flex flex-col sm:flex-row justify-center gap-3 mt-2">
+
+          <h1 class="text-2xl font-extrabold leading-tight text-white sm:text-3xl lg:text-4xl">
+            مجتمع رقمي متكامل يجمع الخريجين ويدعم مسيرتهم المهنية
+          </h1>
+          <p class="mt-4 max-w-3xl text-sm leading-relaxed text-slate-200 sm:text-base">
+            اكتشف آخر الإعلانات، تابع الأنشطة، وابن شبكة علاقات قوية مع خريجي مدرسة الريادة. صُممت المنصة لتكون مركزاً واحداً للفرص، الدعم، والتعاون المجتمعي.
+          </p>
+
+          <div
+            v-if="isPendingMessage"
+            class="mt-5 rounded-2xl border border-amber-300/35 bg-amber-100/15 p-4 text-sm text-amber-100"
+          >
+            طلبك قيد المراجعة حالياً. سيتم إشعارك فور الموافقة على الحساب.
+          </div>
+
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row">
             <router-link
               to="/signup"
-              class="flex-1 sm:flex-none sm:w-44 py-3 px-4 bg-sky-700 text-white rounded-xl font-semibold hover:bg-sky-800 transition-colors text-center shadow-sm"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-600/25 transition-transform duration-200 hover:-translate-y-0.5 hover:from-sky-400 hover:to-indigo-400"
             >
-              إنشاء حساب
+              <span>ابدأ الآن</span>
+              <span>→</span>
             </router-link>
             <router-link
               to="/login"
-              class="flex-1 sm:flex-none sm:w-44 py-3 px-4 border border-sky-600 text-sky-700 rounded-xl font-semibold hover:bg-sky-50 transition-colors text-center bg-white/70"
+              class="inline-flex items-center justify-center rounded-xl border border-white/25 bg-white/10 px-5 py-3 text-sm font-semibold text-slate-100 transition-colors duration-200 hover:bg-white/20"
             >
               تسجيل الدخول
             </router-link>
           </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- 3. About Section -->
-    <section class="border-b border-slate-100">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 text-center sm:text-right">
-        <div class="bg-white/80 rounded-3xl shadow-sm border border-slate-200 px-6 py-8 sm:px-8">
-          <h2 class="text-xl sm:text-2xl font-bold text-slate-900 mb-3">عن الرابطة</h2>
-          <p class="text-slate-600 text-sm sm:text-base leading-relaxed max-w-3xl mx-auto sm:mx-0">
-            رابطة خريجي مدرسة الريادة هي مبادرة تهدف إلى جمع خريجي مدرسة الريادة وتعزيز التواصل بينهم،
-            ودعم الطلاب الحاليين، والمساهمة في المبادرات التعليمية والاجتماعية.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 4. Services Section -->
-    <section class="border-b border-slate-100">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-        <h2 class="text-xl sm:text-2xl font-bold text-slate-800 mb-6 text-center sm:text-right">
-          خدمات الرابطة
-        </h2>
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div
-            class="bg-white/90 rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-          >
-            <h3 class="font-semibold text-slate-800 mb-2">🎓 شبكة الخريجين</h3>
-            <p class="text-sm text-slate-600">
-              التعارف بين الخريجين وتبادل الفرص والخبرات، لبناء شبكة قوية تدعم الجميع.
-            </p>
-          </div>
-          <div
-            class="bg-white/90 rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-          >
-            <h3 class="font-semibold text-slate-800 mb-2">💼 فرص العمل والتدريب</h3>
-            <p class="text-sm text-slate-600">
-              نشر فرص العمل ومشاركة فرص التدريب المقدمة من الخريجين والشركات الشريكة.
-            </p>
-          </div>
-          <div
-            class="bg-white/90 rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-          >
-            <h3 class="font-semibold text-slate-800 mb-2">📚 الدعم الأكاديمي</h3>
-            <p class="text-sm text-slate-600">
-              نصائح دراسية ومحاضرات ولقاءات مع خريجين متميزين لدعم الطلبة الحاليين.
-            </p>
-          </div>
-          <div
-            class="bg-white/90 rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
-          >
-            <h3 class="font-semibold text-slate-800 mb-2">🤝 المبادرات التطوعية</h3>
-            <p class="text-sm text-slate-600">
-              تنظيم حملات خيرية ونشاطات اجتماعية تعزز روح المسؤولية المجتمعية.
-            </p>
+          <div class="mt-7 grid gap-3 sm:grid-cols-3">
+            <article
+              v-for="metric in keyMetrics"
+              :key="metric.label"
+              class="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm"
+            >
+              <p class="text-xs text-slate-300">{{ metric.label }}</p>
+              <p class="mt-1 text-lg font-bold text-white">{{ metric.value }}</p>
+            </article>
           </div>
         </div>
-      </div>
-    </section>
 
-    <!-- 5. Announcements Section -->
-    <section>
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl sm:text-2xl font-bold text-slate-800">آخر الإعلانات</h2>
-          <span class="text-xs text-slate-400" v-if="announcements.length">
+        <div class="lg:col-span-4 space-y-5">
+          <article class="rounded-3xl border border-white/10 bg-white/95 p-5 text-slate-800 shadow-xl">
+            <div class="flex items-center justify-between">
+              <p class="text-sm font-semibold text-slate-700">هوية الرابطة</p>
+              <span class="rounded-full bg-sky-100 px-2 py-1 text-xs text-sky-700">official</span>
+            </div>
+            <img
+              :src="logoImage"
+              alt="شعار مدرسة الريادة"
+              class="mx-auto mt-4 h-auto w-40 object-contain sm:w-44"
+            />
+            <p class="mt-4 text-sm leading-relaxed text-slate-600">
+              منصتنا تجمع الخريجين في واجهة واحدة حديثة للوصول السريع إلى الإعلانات، المبادرات، والخدمات.
+            </p>
+          </article>
+
+          <article class="rounded-3xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50 to-sky-50 p-5 shadow-lg">
+            <p class="text-xs font-semibold text-emerald-700">ميزة هذا الأسبوع</p>
+            <h3 class="mt-2 text-lg font-bold text-slate-800">مجموعات الخريجين حسب سنة التخرج</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+              اربط دفعتك مع الدفعات الأخرى بسهولة لتوسيع العلاقات المهنية ومشاركة الفرص.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <article
+          v-for="feature in platformFeatures"
+          :key="feature.title"
+          class="rounded-2xl border border-white/10 bg-white/5 p-5 shadow-lg shadow-slate-950/30 transition-all duration-200 hover:-translate-y-1 hover:bg-white/10"
+        >
+          <div class="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-fuchsia-400 text-lg">
+            {{ feature.icon }}
+          </div>
+          <h3 class="text-base font-semibold text-white">{{ feature.title }}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-slate-300">{{ feature.description }}</p>
+        </article>
+      </section>
+
+      <section class="mt-10 rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-sm sm:p-8">
+        <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <h2 class="text-xl font-bold text-white sm:text-2xl">مسارات المشاركة</h2>
+          <span class="rounded-full bg-indigo-500/25 px-3 py-1 text-xs font-medium text-indigo-100">
+            تصميم كثيف بالمعلومات
+          </span>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          <article
+            v-for="track in serviceTracks"
+            :key="track.title"
+            class="rounded-2xl border border-white/10 bg-slate-900/65 p-5 transition-all duration-200 hover:border-sky-300/30 hover:shadow-lg hover:shadow-sky-900/20"
+          >
+            <div class="flex items-start justify-between gap-3">
+              <h3 class="text-base font-semibold text-white">{{ track.title }}</h3>
+              <span class="text-xl">{{ track.icon }}</span>
+            </div>
+            <p class="mt-3 text-sm leading-relaxed text-slate-300">{{ track.description }}</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="mt-10">
+        <div class="mb-5 flex items-center justify-between">
+          <h2 class="text-xl font-bold text-white sm:text-2xl">آخر الإعلانات</h2>
+          <span class="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs text-slate-200" v-if="announcements.length">
             إجمالي: {{ announcements.length }}
           </span>
         </div>
+
         <div
           v-if="loading"
-          class="text-slate-500 text-sm bg-white/70 border border-slate-200 rounded-2xl px-4 py-6 text-center"
+          class="rounded-2xl border border-white/15 bg-white/10 px-4 py-8 text-center text-sm text-slate-200"
         >
           جاري تحميل الإعلانات...
         </div>
-        <div v-else-if="!visibleAnnouncements.length" class="text-slate-500 text-sm">
+        <div
+          v-else-if="!visibleAnnouncements.length"
+          class="rounded-2xl border border-dashed border-white/20 bg-white/5 px-4 py-8 text-center text-sm text-slate-300"
+        >
           لا توجد إعلانات حالياً.
         </div>
         <div v-else class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <AnnouncementCard
-            v-for="a in visibleAnnouncements"
-            :key="a.id"
-            :announcement="a"
+            v-for="announcement in visibleAnnouncements"
+            :key="announcement.id"
+            :announcement="announcement"
             :compact="true"
           />
         </div>
-      </div>
-    </section>
+      </section>
+
+      <section class="mt-10 rounded-3xl border border-fuchsia-300/20 bg-gradient-to-r from-sky-600/20 via-indigo-600/20 to-fuchsia-600/20 p-6 text-center shadow-xl sm:p-8">
+        <h2 class="text-xl font-extrabold text-white sm:text-2xl">كن جزءاً من شبكة الخريجين المؤثرة</h2>
+        <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-200 sm:text-base">
+          من خلال حساب واحد، يمكنك الوصول إلى فرص عمل، مبادرات تطوعية، ومحتوى معرفي يطوّر مسارك المهني.
+        </p>
+        <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
+          <router-link
+            to="/signup"
+            class="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition-transform duration-200 hover:-translate-y-0.5"
+          >
+            إنشاء حساب جديد
+          </router-link>
+          <router-link
+            to="/login"
+            class="inline-flex items-center justify-center rounded-xl border border-white/35 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition-colors duration-200 hover:bg-white/20"
+          >
+            دخول الأعضاء
+          </router-link>
+        </div>
+      </section>
+    </main>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useAnnouncements } from '../composables/useAnnouncements'
 import AnnouncementCard from '../components/AnnouncementCard.vue'
 
+const route = useRoute()
 const logoImage = new URL('../assets/logo.png', import.meta.url).href
-
 const { announcements, loading } = useAnnouncements({ autoLoad: true })
 
-// لا نعرض سوى أول 6 إعلانات لتبقى الصفحة نظيفة.
+const isPendingMessage = computed(() => route.query.message === 'pending')
+
 const visibleAnnouncements = computed(() => announcements.value.slice(0, 6))
+
+const keyMetrics = [
+  { label: 'خريجون نشطون', value: '+1,250' },
+  { label: 'فرص مهنية', value: '+180' },
+  { label: 'مبادرات مجتمعية', value: '+45' },
+]
+
+const platformFeatures = [
+  {
+    icon: '⚡',
+    title: 'تجربة استخدام سريعة',
+    description: 'وصول مباشر للخدمات الأساسية مع واجهة حديثة وواضحة على كل الأجهزة.',
+  },
+  {
+    icon: '🧭',
+    title: 'تنقل ذكي',
+    description: 'أقسام مصممة لتسهيل العثور على الإعلانات والخدمات والبرامج الأكثر أهمية.',
+  },
+  {
+    icon: '🛡️',
+    title: 'مجتمع موثوق',
+    description: 'آلية مراجعة للحسابات للحفاظ على بيئة آمنة تعزز التفاعل البنّاء.',
+  },
+  {
+    icon: '📣',
+    title: 'تحديثات مستمرة',
+    description: 'تنبيهات وإعلانات جديدة تساعدك على متابعة كل ما يخص الرابطة بشكل يومي.',
+  },
+]
+
+const serviceTracks = [
+  {
+    icon: '🎓',
+    title: 'شبكة الخريجين',
+    description: 'التعارف بين الخريجين وتبادل الخبرات والدعم المهني بين مختلف الدفعات.',
+  },
+  {
+    icon: '💼',
+    title: 'الفرص المهنية',
+    description: 'الإعلان عن فرص العمل والتدريب بالتعاون مع الخريجين والشركاء المهنيين.',
+  },
+  {
+    icon: '📚',
+    title: 'التوجيه الأكاديمي',
+    description: 'لقاءات معرفية وخبرات عملية تساعد الطلاب والخريجين الجدد على التطور.',
+  },
+  {
+    icon: '🤝',
+    title: 'المبادرات التطوعية',
+    description: 'تنظيم حملات وأنشطة مجتمعية تعكس روح الانتماء والمسؤولية.',
+  },
+  {
+    icon: '🌐',
+    title: 'شراكات استراتيجية',
+    description: 'فتح قنوات تعاون مع مؤسسات تعليمية ومهنية لدعم مسار الخريجين.',
+  },
+  {
+    icon: '🏆',
+    title: 'قصص نجاح',
+    description: 'إبراز إنجازات خريجي المدرسة لتكون مصدر إلهام للأجيال القادمة.',
+  },
+]
 </script>
