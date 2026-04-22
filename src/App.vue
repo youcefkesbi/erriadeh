@@ -45,7 +45,9 @@
     </header>
 
     <main class="flex-1">
-      <router-view />
+      <HomepageLayout>
+        <router-view />
+      </HomepageLayout>
     </main>
 
     <footer class="border-t border-slate-200 bg-white">
@@ -79,6 +81,7 @@
 <script setup>
 import { computed } from 'vue'
 import { useAuthStore } from './stores/auth'
+import HomepageLayout from './components/HomepageLayout.vue'
 import logo from './assets/logo.png'
 
 const auth = useAuthStore()
