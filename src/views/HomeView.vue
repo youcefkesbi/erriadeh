@@ -60,7 +60,6 @@
           <article class="rounded-3xl border border-white/10 bg-white/95 p-5 text-slate-800 shadow-xl">
             <div class="flex items-center justify-between">
               <p class="text-sm font-semibold text-slate-700">هوية الرابطة</p>
-              <span class="rounded-full bg-sky-100 px-2 py-1 text-xs text-sky-700">official</span>
             </div>
             <img
               :src="logoImage"
@@ -73,10 +72,10 @@
           </article>
 
           <article class="rounded-3xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50 to-sky-50 p-5 shadow-lg">
-            <p class="text-xs font-semibold text-emerald-700">ميزة هذا الأسبوع</p>
-            <h3 class="mt-2 text-lg font-bold text-slate-800">مجموعات الخريجين حسب سنة التخرج</h3>
+            <p class="text-xs font-semibold text-emerald-700">الحدث القادم</p>
+            <h3 class="mt-2 text-lg font-bold text-slate-800">اللقاء الأول لرابطة خريجي مدرسة الريادة</h3>
             <p class="mt-2 text-sm leading-relaxed text-slate-600">
-              اربط دفعتك مع الدفعات الأخرى بسهولة لتوسيع العلاقات المهنية ومشاركة الفرص.
+              مبرمج أن يكون في صيف 2026.
             </p>
           </article>
         </div>
