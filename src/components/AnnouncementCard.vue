@@ -10,7 +10,7 @@
       <img
         :src="announcement.image_url"
         alt="صورة الإعلان"
-        class="w-full h-40 object-cover"
+        class="w-full h-400 object-cover"
       />
     </div>
     <div class="p-3 sm:p-4 flex flex-col flex-1">

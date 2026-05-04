@@ -11,7 +11,7 @@
             v-model="email"
             type="email"
             required
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+            class="w-full px-4 py-2 text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
             placeholder="example@email.com"
           />
         </div>
@@ -21,7 +21,7 @@
             v-model="password"
             type="password"
             required
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+            class="w-full px-4 py-2 text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
           />
         </div>
         <p v-if="error" class="text-sm text-red-600">{{ error }}</p>

@@ -11,7 +11,7 @@
             v-model="email"
             type="email"
             required
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+            class="w-full px-4 py-2 text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
             placeholder="example@email.com"
           />
         </div>
@@ -22,7 +22,7 @@
             type="password"
             required
             minlength="6"
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+            class="w-full px-4 py-2 text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
           />
         </div>
         <div>
@@ -31,7 +31,7 @@
             v-model="fullName"
             type="text"
             required
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+            class="w-full px-4 py-2 text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
             placeholder="الاسم الكامل"
           />
         </div>
@@ -43,7 +43,7 @@
             required
             min="1990"
             max="2030"
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+            class="w-full px-4 py-2 text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
             placeholder="مثال: 2020"
           />
         </div>
@@ -53,7 +53,7 @@
             v-model="phone"
             type="tel"
             required
-            class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
+            class="w-full px-4 py-2 text-slate-900 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent"
             placeholder="05xxxxxxxx"
           />
         </div>
