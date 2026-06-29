@@ -1,19 +1,19 @@
 <template>
-  <div class="min-h-screen bg-slate-50">
-    <header class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center">
+  <div class="min-h-screen bg-brand-blue-50">
+    <header class="bg-white border-b border-brand-blue-100 px-6 py-4 flex justify-between items-center">
       <div class="flex items-center gap-2">
         <img
           :src="logo"
           alt="شعار الريادة"
           class="h-8 w-auto object-contain"
         />
-        <h1 class="text-xl font-bold text-slate-800">لوحة الإدارة</h1>
+        <h1 class="text-xl font-bold text-brand-blue-800">لوحة الإدارة</h1>
       </div>
       <div class="flex items-center gap-4">
-        <span class="text-slate-600">{{ auth.profile?.full_name }} (مدير)</span>
+        <span class="text-brand-blue-600">{{ auth.profile?.full_name }} (مدير)</span>
         <button
           @click="handleLogout"
-          class="text-sm text-slate-600 hover:text-slate-800"
+          class="text-sm text-brand-blue-600 hover:text-brand-blue-800"
         >
           تسجيل الخروج
         </button>
@@ -22,26 +22,26 @@
 
     <main class="max-w-4xl mx-auto p-6 space-y-8">
       <!-- Pending students -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h2 class="text-lg font-semibold text-slate-800 mb-4">الطلاب المعلّقون (بانتظار الموافقة)</h2>
-        <div v-if="loadingPending" class="text-slate-500">جاري التحميل...</div>
-        <div v-else-if="!pending.length" class="text-slate-500">لا يوجد طلاب معلّقون.</div>
+      <section class="bg-white rounded-xl shadow-sm border border-brand-blue-100 p-6">
+        <h2 class="text-lg font-semibold text-brand-blue-800 mb-4">الطلاب المعلّقون (بانتظار الموافقة)</h2>
+        <div v-if="loadingPending" class="text-brand-blue-500">جاري التحميل...</div>
+        <div v-else-if="!pending.length" class="text-brand-blue-500">لا يوجد طلاب معلّقون.</div>
         <ul v-else class="space-y-4">
           <li
             v-for="p in pending"
             :key="p.id"
-            class="border border-slate-200 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+            class="border border-brand-blue-100 rounded-lg p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
           >
             <div>
-              <p class="font-medium text-slate-800">{{ p.full_name }}</p>
-              <p class="text-sm text-slate-600">{{ p.email }}</p>
-              <p class="text-sm text-slate-500">سنة التخرج: {{ p.graduation_year }} | هاتف: {{ p.phone }}</p>
+              <p class="font-medium text-brand-blue-800">{{ p.full_name }}</p>
+              <p class="text-sm text-brand-blue-600">{{ p.email }}</p>
+              <p class="text-sm text-brand-blue-500">سنة التخرج: {{ p.graduation_year }} | هاتف: {{ p.phone }}</p>
               <a
                 v-if="p.transcript_url"
                 :href="p.transcript_url"
                 target="_blank"
                 rel="noopener"
-                class="text-sm text-slate-600 hover:underline mt-1 inline-block"
+                class="text-sm text-brand-blue-600 hover:underline mt-1 inline-block"
               >
                 عرض كشف الدرجات
               </a>
@@ -67,53 +67,53 @@
       </section>
 
       <!-- Announcements management -->
-      <section class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+      <section class="bg-white rounded-xl shadow-sm border border-brand-blue-100 p-6">
         <div class="flex items-center justify-between mb-4">
-          <h2 class="text-lg font-semibold text-slate-800">الإعلانات</h2>
+          <h2 class="text-lg font-semibold text-brand-blue-800">الإعلانات</h2>
         </div>
 
         <div class="grid gap-6 md:grid-cols-[1.3fr_minmax(0,1.7fr)]">
           <!-- Form -->
           <div>
-            <h3 class="text-sm font-semibold text-slate-700 mb-3">
+            <h3 class="text-sm font-semibold text-brand-blue-700 mb-3">
               {{ editingId ? 'تعديل إعلان' : 'إضافة إعلان جديد' }}
             </h3>
             <form @submit.prevent="saveAnnouncement" class="space-y-3">
               <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">عنوان الإعلان</label>
+                <label class="block text-sm font-medium text-brand-blue-700 mb-1">عنوان الإعلان</label>
                 <input
                   v-model="form.title"
                   type="text"
                   required
-                  class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent text-sm"
+                  class="w-full px-3 py-2 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm"
                   placeholder="عنوان مختصر وواضح"
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">نص الإعلان</label>
+                <label class="block text-sm font-medium text-brand-blue-700 mb-1">نص الإعلان</label>
                 <textarea
                   v-model="form.content"
                   rows="4"
                   required
-                  class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent text-sm"
+                  class="w-full px-3 py-2 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm"
                   placeholder="تفاصيل الإعلان..."
                 ></textarea>
               </div>
               <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">صورة الإعلان (اختياري)</label>
+                <label class="block text-sm font-medium text-brand-blue-700 mb-1">صورة الإعلان (اختياري)</label>
                 <input
                   type="file"
                   accept="image/*"
                   @change="onImageChange"
-                  class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-slate-500 focus:border-transparent text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-slate-100 file:text-slate-700"
+                  class="w-full px-3 py-2 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-brand-blue-50 file:text-brand-blue-700"
                 />
-                <p class="text-xs text-slate-500 mt-1">اختر صورة خفيفة تمثل الإعلان (اختياري).</p>
+                <p class="text-xs text-brand-blue-500 mt-1">اختر صورة خفيفة تمثل الإعلان (اختياري).</p>
                 <div v-if="imagePreview" class="mt-2">
-                  <p class="text-xs text-slate-500 mb-1">معاينة:</p>
+                  <p class="text-xs text-brand-blue-500 mb-1">معاينة:</p>
                   <img
                     :src="imagePreview"
                     alt="صورة الإعلان"
-                    class="w-full max-h-40 object-cover rounded-md border border-slate-200"
+                    class="w-full max-h-40 object-cover rounded-md border border-brand-blue-100"
                   />
                 </div>
               </div>
@@ -122,7 +122,7 @@
                 <button
                   type="submit"
                   :disabled="savingAnnouncement"
-                  class="px-4 py-2 bg-slate-800 text-white rounded-lg text-sm font-medium hover:bg-slate-700 disabled:opacity-50"
+                  class="px-4 py-2 bg-brand-blue text-white rounded-lg text-sm font-medium hover:bg-brand-blue-600 disabled:opacity-50"
                 >
                   {{ savingAnnouncement ? 'جاري الحفظ...' : (editingId ? 'تحديث الإعلان' : 'إضافة الإعلان') }}
                 </button>
@@ -130,7 +130,7 @@
                   v-if="editingId"
                   type="button"
                   @click="resetForm"
-                  class="px-3 py-2 text-sm text-slate-600 hover:text-slate-800"
+                  class="px-3 py-2 text-sm text-brand-blue-600 hover:text-brand-blue-800"
                 >
                   إلغاء التعديل
                 </button>
@@ -141,33 +141,33 @@
           <!-- List -->
           <div>
             <div class="flex items-center justify-between mb-2">
-              <h3 class="text-sm font-semibold text-slate-700">قائمة الإعلانات</h3>
+              <h3 class="text-sm font-semibold text-brand-blue-700">قائمة الإعلانات</h3>
               <button
                 type="button"
                 @click="reloadAnnouncements"
-                class="text-xs text-slate-500 hover:text-slate-700"
+                class="text-xs text-brand-blue-500 hover:text-brand-blue-700"
               >
                 تحديث
               </button>
             </div>
-            <div v-if="loadingAnnouncements" class="text-slate-500 text-sm">جاري تحميل الإعلانات...</div>
-            <div v-else-if="!announcements.length" class="text-slate-500 text-sm">لا توجد إعلانات حالياً.</div>
+            <div v-if="loadingAnnouncements" class="text-brand-blue-500 text-sm">جاري تحميل الإعلانات...</div>
+            <div v-else-if="!announcements.length" class="text-brand-blue-500 text-sm">لا توجد إعلانات حالياً.</div>
             <ul v-else class="space-y-3 max-h-80 overflow-y-auto pr-1">
               <li
                 v-for="a in announcements"
                 :key="a.id"
-                class="border border-slate-200 rounded-lg p-3 flex flex-col gap-2"
+                class="border border-brand-blue-100 rounded-lg p-3 flex flex-col gap-2"
               >
                 <div class="flex items-start justify-between gap-3">
                   <div>
-                    <h4 class="font-medium text-slate-800 text-sm">{{ a.title }}</h4>
-                    <p class="text-xs text-slate-500 mt-0.5">{{ formatDate(a.created_at) }}</p>
+                    <h4 class="font-medium text-brand-blue-800 text-sm">{{ a.title }}</h4>
+                    <p class="text-xs text-brand-blue-500 mt-0.5">{{ formatDate(a.created_at) }}</p>
                   </div>
                   <div class="flex gap-2">
                     <button
                       type="button"
                       @click="startEdit(a)"
-                      class="px-2 py-1 text-xs border border-slate-300 rounded-md text-slate-700 hover:bg-slate-50"
+                      class="px-2 py-1 text-xs border border-brand-blue-200 rounded-md text-brand-blue-700 hover:bg-brand-blue-50"
                     >
                       تعديل
                     </button>
@@ -185,10 +185,10 @@
                   <img
                     :src="a.image_url"
                     alt="صورة الإعلان"
-                    class="w-full max-h-40 object-cover rounded-md border border-slate-100"
+                    class="w-full max-h-40 object-cover rounded-md border border-brand-blue-100"
                   />
                 </div>
-                <p class="text-sm text-slate-600 whitespace-pre-wrap mt-1">{{ a.content }}</p>
+                <p class="text-sm text-brand-blue-600 whitespace-pre-wrap mt-1">{{ a.content }}</p>
               </li>
             </ul>
           </div>
@@ -212,7 +212,7 @@ import {
   uploadAnnouncementImage,
   signOut,
 } from '../supabase'
-import logo from '../assets/logo.png'
+import logo from '../assets/new/new-logo.PNG'
 
 const router = useRouter()
 const auth = useAuthStore()

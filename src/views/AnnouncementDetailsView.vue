@@ -1,15 +1,15 @@
 <template>
-  <div class="bg-slate-50 min-h-[70vh]">
+  <div class="bg-brand-blue-50 min-h-[70vh]">
     <section class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
       <router-link
         to="/"
-        class="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900 mb-6"
+        class="inline-flex items-center gap-2 text-sm text-brand-blue-600 hover:text-brand-blue-900 mb-6"
       >
         <span>←</span>
         <span>العودة إلى الرئيسية</span>
       </router-link>
 
-      <div v-if="loading" class="bg-white border border-slate-200 rounded-2xl p-8 text-slate-500 text-center">
+      <div v-if="loading" class="bg-white border border-brand-blue-100 rounded-2xl p-8 text-brand-blue-500 text-center">
         جاري تحميل الإعلان...
       </div>
 
@@ -17,8 +17,8 @@
         {{ error }}
       </div>
 
-      <article v-else-if="announcement" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
-        <div v-if="announcement.image_url" class="border-b border-slate-100 bg-slate-50">
+      <article v-else-if="announcement" class="bg-white border border-brand-blue-100 rounded-2xl overflow-hidden shadow-sm">
+        <div v-if="announcement.image_url" class="border-b border-brand-blue-50 bg-brand-blue-50">
           <img
             :src="announcement.image_url"
             alt="صورة الإعلان"
@@ -26,19 +26,19 @@
           />
         </div>
         <div class="p-6 sm:p-8">
-          <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+          <h1 class="text-2xl sm:text-3xl font-bold text-brand-blue-900 mb-2">
             {{ announcement.title }}
           </h1>
-          <p class="text-xs sm:text-sm text-slate-500 mb-6">
+          <p class="text-xs sm:text-sm text-brand-blue-500 mb-6">
             {{ formatDate(announcement.created_at) }}
           </p>
-          <p class="text-slate-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
+          <p class="text-brand-blue-700 leading-relaxed whitespace-pre-wrap text-sm sm:text-base">
             {{ announcement.content }}
           </p>
         </div>
       </article>
 
-      <div v-else class="bg-white border border-slate-200 rounded-2xl p-8 text-slate-500 text-center">
+      <div v-else class="bg-white border border-brand-blue-100 rounded-2xl p-8 text-brand-blue-500 text-center">
         الإعلان غير موجود.
       </div>
     </section>

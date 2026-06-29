@@ -1,15 +1,16 @@
 <template>
+  <div>
   <section class="grid gap-5 lg:grid-cols-12">
-        <div class="lg:col-span-8 lg:order-2 rounded-3xl border border-white/10 bg-gradient-to-br from-slate-900/95 via-indigo-950/85 to-sky-900/85 p-6 shadow-2xl sm:p-8">
+        <div class="lg:col-span-8 lg:order-2 rounded-3xl border border-white/10 bg-gradient-to-br from-brand-blue-900/95 via-brand-blue-800/85 to-brand-blue-700/85 p-6 shadow-2xl sm:p-8">
           <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-            <p class="inline-flex items-center gap-2 rounded-full border border-sky-300/30 bg-sky-300/10 px-3 py-1 text-xs font-semibold text-sky-100">
+            <p class="inline-flex items-center gap-2 rounded-full border border-brand-blue-300/30 bg-brand-blue-300/10 px-3 py-1 text-xs font-semibold text-brand-blue-100">
               <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 10.5 12 6l9 4.5-9 4.5-9-4.5Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 12.5v4.25a1 1 0 0 0 .55.9l5 2.5a1 1 0 0 0 .9 0l5-2.5a1 1 0 0 0 .55-.9V12.5" />
               </svg>
               <span>منصة خريجي مدرسة الريادة</span>
             </p>
-            <span class="rounded-full border border-fuchsia-300/40 bg-fuchsia-300/15 px-3 py-1 text-xs font-medium text-fuchsia-100">
+            <span class="rounded-full border border-brand-orange-300/40 bg-brand-orange-300/15 px-3 py-1 text-xs font-medium text-brand-orange-100">
               تواصل، فرص، مبادرات
             </span>
           </div>
@@ -23,7 +24,7 @@
 
           <div
             v-if="isPendingMessage"
-            class="mt-5 rounded-2xl border border-amber-300/35 bg-amber-100/15 p-4 text-sm text-amber-100"
+            class="mt-5 rounded-2xl border border-brand-orange-300/35 bg-brand-orange-100/15 p-4 text-sm text-brand-orange-100"
           >
             طلبك قيد المراجعة حالياً. سيتم إشعارك فور الموافقة على الحساب.
           </div>
@@ -31,7 +32,7 @@
           <div class="mt-6 flex flex-col gap-3 sm:flex-row">
             <router-link
               to="/signup"
-              class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-sky-600/25 transition-transform duration-200 hover:-translate-y-0.5 hover:from-sky-400 hover:to-indigo-400"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-orange to-brand-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-orange-500/25 transition-transform duration-200 hover:-translate-y-0.5 hover:from-brand-orange-300 hover:to-brand-orange-500"
             >
               <span>ابدأ الآن</span>
               <span>→</span>
@@ -57,24 +58,24 @@
         </div>
 
         <div class="lg:col-span-4 lg:order-1 space-y-5">
-          <article class="rounded-3xl border border-white/10 bg-white/95 p-5 text-slate-800 shadow-xl">
+          <article class="rounded-3xl border border-white/10 bg-white/95 p-5 text-brand-blue-800 shadow-xl">
             <div class="flex items-center justify-between">
-              <p class="text-sm font-semibold text-slate-700">هوية الرابطة</p>
+              <p class="text-sm font-semibold text-brand-blue-700">هوية الرابطة</p>
             </div>
             <img
               :src="logoImage"
               alt="شعار مدرسة الريادة"
               class="mx-auto mt-4 h-auto w-40 object-contain sm:w-44"
             />
-            <p class="mt-4 text-sm leading-relaxed text-slate-600">
+            <p class="mt-4 text-sm leading-relaxed text-brand-blue-600">
               منصتنا تجمع الخريجين في واجهة واحدة حديثة للوصول السريع إلى الإعلانات، المبادرات، والخدمات.
             </p>
           </article>
 
-          <article class="rounded-3xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50 to-sky-50 p-5 shadow-lg">
-            <p class="text-xs font-semibold text-emerald-700">الحدث القادم</p>
-            <h3 class="mt-2 text-lg font-bold text-slate-800">اللقاء الأول لرابطة خريجي مدرسة الريادة</h3>
-            <p class="mt-2 text-sm leading-relaxed text-slate-600">
+          <article class="rounded-3xl border border-brand-green-200/60 bg-gradient-to-br from-brand-green-50 to-brand-blue-50 p-5 shadow-lg">
+            <p class="text-xs font-semibold text-brand-green-700">الحدث القادم</p>
+            <h3 class="mt-2 text-lg font-bold text-brand-blue-800">اللقاء الأول لرابطة خريجي مدرسة الريادة</h3>
+            <p class="mt-2 text-sm leading-relaxed text-brand-blue-600">
               مبرمج أن يكون في صيف 2026.
             </p>
           </article>
@@ -89,11 +90,11 @@
           <article
             v-for="track in serviceTracks"
             :key="track.title"
-            class="rounded-2xl border border-white/10 bg-slate-900/65 p-5 transition-all duration-200 hover:border-sky-300/30 hover:shadow-lg hover:shadow-sky-900/20"
+            class="rounded-2xl border border-white/10 bg-brand-blue-900/65 p-5 transition-all duration-200 hover:border-brand-blue-300/30 hover:shadow-lg hover:shadow-brand-blue-900/20"
           >
             <div class="flex items-start justify-between gap-3">
               <h3 class="text-base font-semibold text-white">{{ track.title }}</h3>
-              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-300/30 bg-sky-400/10 text-sky-100">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-brand-blue-300/30 bg-brand-blue-400/10 text-brand-blue-100">
                 <svg
                   class="h-5 w-5"
                   viewBox="0 0 24 24"
@@ -141,7 +142,7 @@
         </div>
   </section>
 
-  <section class="mt-10 rounded-3xl border border-fuchsia-300/20 bg-gradient-to-r from-sky-600/20 via-indigo-600/20 to-fuchsia-600/20 p-6 text-center shadow-xl sm:p-8">
+  <section class="mt-10 rounded-3xl border border-brand-orange-300/20 bg-gradient-to-r from-brand-blue-600/20 via-brand-green-500/20 to-brand-orange-500/20 p-6 text-center shadow-xl sm:p-8">
         <h2 class="text-xl font-extrabold text-white sm:text-2xl">كن جزءاً من شبكة الخريجين المؤثرة</h2>
         <p class="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-slate-200 sm:text-base">
           من خلال حساب واحد، يمكنك الوصول إلى فرص عمل، مبادرات تطوعية، ومحتوى معرفي يطوّر مسارك المهني.
@@ -149,7 +150,7 @@
         <div class="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
           <router-link
             to="/signup"
-            class="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition-transform duration-200 hover:-translate-y-0.5"
+            class="inline-flex items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-semibold text-brand-blue-900 transition-transform duration-200 hover:-translate-y-0.5"
           >
             إنشاء حساب جديد
           </router-link>
@@ -161,6 +162,7 @@
           </router-link>
         </div>
   </section>
+  </div>
 </template>
 
 <script setup>
@@ -170,7 +172,7 @@ import { useAnnouncements } from '../composables/useAnnouncements'
 import AnnouncementCard from '../components/AnnouncementCard.vue'
 
 const route = useRoute()
-const logoImage = new URL('../assets/logo.png', import.meta.url).href
+const logoImage = new URL('../assets/new/new-logo.PNG', import.meta.url).href
 const { announcements, loading } = useAnnouncements({ autoLoad: true })
 
 const isPendingMessage = computed(() => route.query.message === 'pending')

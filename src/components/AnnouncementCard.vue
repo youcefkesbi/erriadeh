@@ -1,14 +1,14 @@
 <template>
   <router-link
     :to="`/announcements/${announcement.id}`"
-    class="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 rounded-xl"
+    class="block group focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue rounded-xl"
   >
     <article
-      class="bg-white border border-slate-200 rounded-xl overflow-hidden flex flex-col h-full transition-all duration-200 group-hover:shadow-md group-hover:-translate-y-0.5"
+      class="bg-white border border-brand-blue-100 rounded-xl overflow-hidden flex flex-col h-full transition-all duration-200 group-hover:shadow-md group-hover:-translate-y-0.5"
     >
     <div v-if="announcement.image_url" class="relative">
       <span
-        class="absolute top-3 left-3 z-10 rounded-full bg-slate-500/90 px-3 py-1.5 text-xs font-semibold text-white"
+        class="absolute top-3 left-3 z-10 rounded-full bg-brand-blue-500/90 px-3 py-1.5 text-xs font-semibold text-white"
       >
         انتهى
       </span>
@@ -19,19 +19,19 @@
       />
     </div>
     <div v-else class="px-3 pt-3">
-      <span class="inline-flex rounded-full bg-slate-500/90 px-3 py-1.5 text-xs font-semibold text-white">
+      <span class="inline-flex rounded-full bg-brand-blue-500/90 px-3 py-1.5 text-xs font-semibold text-white">
         انتهى
       </span>
     </div>
     <div class="p-3 sm:p-4 flex flex-col flex-1">
-      <h3 class="font-medium text-slate-800 text-sm sm:text-base line-clamp-2 mb-1 group-hover:text-sky-700 transition-colors">
+      <h3 class="font-medium text-brand-blue-800 text-sm sm:text-base line-clamp-2 mb-1 group-hover:text-brand-blue transition-colors">
         {{ announcement.title }}
       </h3>
-      <p v-if="formattedDate" class="text-xs text-slate-500 mb-2">
+      <p v-if="formattedDate" class="text-xs text-brand-blue-500 mb-2">
         {{ formattedDate }}
       </p>
       <p
-        class="text-sm text-slate-600 whitespace-pre-wrap"
+        class="text-sm text-brand-blue-600 whitespace-pre-wrap"
         :class="compact ? 'line-clamp-3' : ''"
       >
         {{ announcement.content }}
