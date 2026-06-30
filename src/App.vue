@@ -8,9 +8,11 @@
             alt="شعار الريادة"
             class="h-8 w-auto object-contain"
           />
-          <span class="hidden sm:inline text-sm font-semibold text-brand-blue-800">
-            رابطة خريجي مدرسة الريادة
-          </span>
+          <div class="hidden sm:flex flex-col">
+            <span class="text-sm font-semibold text-brand-blue-800">
+              رابطة خريجي مدرسة الريادة
+            </span>
+          </div>
         </router-link>
         <nav class="flex items-center gap-4 text-xs sm:text-sm text-brand-blue-600">
           <router-link

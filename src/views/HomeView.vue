@@ -15,7 +15,11 @@
             </span>
           </div>
 
-          <h1 class="text-2xl font-extrabold leading-tight text-white sm:text-3xl lg:text-4xl">
+          <p class="text-base font-semibold text-brand-orange-200 sm:text-lg">
+            ريادةٌ تجمعنا.. ووفاءٌ يمتد
+          </p>
+
+          <h1 class="mt-3 text-2xl font-extrabold leading-tight text-white sm:text-3xl lg:text-4xl">
             مجتمع رقمي متكامل يجمع الخريجين ويدعم مسيرتهم المهنية
           </h1>
           <p class="mt-4 max-w-3xl text-sm leading-relaxed text-slate-200 sm:text-base">
@@ -67,7 +71,7 @@
               alt="شعار مدرسة الريادة"
               class="mx-auto mt-4 h-auto w-40 object-contain sm:w-44"
             />
-            <p class="mt-4 text-sm leading-relaxed text-brand-blue-600">
+            <p class="mt-2 text-sm leading-relaxed text-brand-blue-600">
               منصتنا تجمع الخريجين في واجهة واحدة حديثة للوصول السريع إلى الإعلانات، المبادرات، والخدمات.
             </p>
           </article>

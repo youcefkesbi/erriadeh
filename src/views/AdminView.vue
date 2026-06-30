@@ -85,7 +85,7 @@
                   v-model="form.title"
                   type="text"
                   required
-                  class="w-full px-3 py-2 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm"
+                  class="w-full px-3 py-2 text-brand-blue-900 bg-white border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm"
                   placeholder="عنوان مختصر وواضح"
                 />
               </div>
@@ -95,7 +95,7 @@
                   v-model="form.content"
                   rows="4"
                   required
-                  class="w-full px-3 py-2 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm"
+                  class="w-full px-3 py-2 text-brand-blue-900 bg-white border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm"
                   placeholder="تفاصيل الإعلان..."
                 ></textarea>
               </div>
@@ -105,7 +105,7 @@
                   type="file"
                   accept="image/*"
                   @change="onImageChange"
-                  class="w-full px-3 py-2 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-brand-blue-50 file:text-brand-blue-700"
+                  class="w-full px-3 py-2 text-brand-blue-900 bg-white border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent text-sm file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-brand-blue-50 file:text-brand-blue-700"
                 />
                 <p class="text-xs text-brand-blue-500 mt-1">اختر صورة خفيفة تمثل الإعلان (اختياري).</p>
                 <div v-if="imagePreview" class="mt-2">
