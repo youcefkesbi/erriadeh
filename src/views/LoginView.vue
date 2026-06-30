@@ -6,7 +6,9 @@
 
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-brand-blue-700 mb-1">البريد الإلكتروني</label>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            البريد الإلكتروني <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
           <input
             v-model="email"
             type="email"
@@ -16,13 +18,10 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-brand-blue-700 mb-1">كلمة المرور</label>
-          <input
-            v-model="password"
-            type="password"
-            required
-            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-          />
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            كلمة المرور <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <PasswordInput v-model="password" required />
         </div>
         <p v-if="error" class="text-sm text-red-600">{{ error }}</p>
         <button
@@ -33,6 +32,13 @@
           {{ loading ? 'جاري الدخول...' : 'دخول' }}
         </button>
       </form>
+
+      <p class="mt-6 text-center text-sm text-brand-blue-600">
+        ليس لديك حساب بعد؟
+        <router-link to="/signup" class="font-medium text-brand-blue hover:text-brand-blue-800">
+          إنشاء حساب
+        </router-link>
+      </p>
     </div>
   </div>
 </template>
@@ -42,6 +48,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { signInWithEmail, waitForAuthSession } from '../supabase'
+import PasswordInput from '../components/PasswordInput.vue'
 
 const router = useRouter()
 const auth = useAuthStore()

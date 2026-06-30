@@ -58,7 +58,7 @@
         </div>
 
         <div class="lg:col-span-4 lg:order-1 space-y-5">
-          <article class="rounded-3xl border border-white/10 bg-white/95 p-5 text-brand-blue-800 shadow-xl">
+          <article class="rounded-3xl border border-white/10 bg-white p-5 text-brand-blue-800 shadow-xl">
             <div class="flex items-center justify-between">
               <p class="text-sm font-semibold text-brand-blue-700">هوية الرابطة</p>
             </div>

@@ -51,6 +51,16 @@ ON profiles
 FOR SELECT
 USING (public.current_user_is_admin());
 
+CREATE POLICY "admins_can_update_profiles"
+ON profiles
+FOR UPDATE
+USING (public.current_user_is_admin());
+
+CREATE POLICY "admins_can_delete_profiles"
+ON profiles
+FOR DELETE
+USING (public.current_user_is_admin());
+
 -- Storage bucket "Transcript": allow authenticated users to upload to their own folder.
 -- Path format used by app: {user_id}/{user_id}.{ext} so first path segment = auth.uid().
 -- In Supabase Dashboard: Storage → Transcript → Policies → New policy.

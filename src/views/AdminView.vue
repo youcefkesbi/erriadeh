@@ -205,6 +205,7 @@ import { useAuthStore } from '../stores/auth'
 import {
   getPendingProfiles,
   updateProfileStatus,
+  deleteProfile,
   getAnnouncements,
   createAnnouncement,
   updateAnnouncement,
@@ -237,8 +238,9 @@ async function approve(userId) {
 }
 
 async function reject(userId) {
+  if (!confirm('هل أنت متأكد من رفض هذا الطالب؟ سيتم حذف سجله نهائياً.')) return
   pendingActionId.value = userId
-  const { error } = await updateProfileStatus(userId, 'rejected')
+  const { error } = await deleteProfile(userId)
   pendingActionId.value = null
   if (!error) pending.value = pending.value.filter((p) => p.id !== userId)
 }

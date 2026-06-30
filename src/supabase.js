@@ -87,7 +87,23 @@ export function onAuthStateChange(callback) {
  * Profile: create after signup. RLS: INSERT allowed when auth.uid() = id.
  * Use transcript_url: '' for initial insert; set transcript_url after upload via updateMyProfile.
  */
-export async function createProfile({ id, full_name, email, graduation_year, phone, transcript_url }) {
+export async function createProfile({
+  id,
+  full_name,
+  email,
+  graduation_year,
+  phone,
+  transcript_url,
+  birth_date,
+  blood_type,
+  uni_specialization,
+  uni_year,
+  uni_place,
+  job_title,
+  workplace,
+  skills,
+  notes,
+}) {
   const { data, error } = await supabase
     .from('profiles')
     .insert({
@@ -99,6 +115,15 @@ export async function createProfile({ id, full_name, email, graduation_year, pho
       role: 'student',
       status: 'pending',
       transcript_url: transcript_url ?? '',
+      birth_date,
+      blood_type: blood_type?.trim() ?? '',
+      uni_specialization: uni_specialization?.trim() ?? '',
+      uni_year: uni_year?.trim() ?? '',
+      uni_place: uni_place?.trim() ?? '',
+      job_title: job_title?.trim() || null,
+      workplace: workplace?.trim() || null,
+      skills: skills?.length ? skills : null,
+      notes: notes?.trim() || null,
     })
     .select()
     .single()
@@ -139,6 +164,16 @@ export async function updateProfileStatus(userId, status) {
   const { data, error } = await supabase
     .from('profiles')
     .update({ status })
+    .eq('id', userId)
+    .select()
+    .single()
+  return { data, error }
+}
+
+export async function deleteProfile(userId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .delete()
     .eq('id', userId)
     .select()
     .single()

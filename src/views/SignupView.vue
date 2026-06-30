@@ -1,12 +1,14 @@
 <template>
   <div class="min-h-screen bg-brand-blue-50 flex flex-col items-center justify-center p-6">
-    <div class="max-w-sm w-full">
+    <div class="max-w-md w-full">
       <router-link to="/" class="inline-block text-brand-blue-600 hover:text-brand-blue-800 mb-6">← الرئيسية</router-link>
       <h1 class="text-2xl font-bold text-brand-blue-800 mb-6">إنشاء حساب</h1>
 
       <form @submit.prevent="handleSignup" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-brand-blue-700 mb-1">البريد الإلكتروني</label>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            البريد الإلكتروني <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
           <input
             v-model="email"
             type="email"
@@ -16,17 +18,15 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-brand-blue-700 mb-1">كلمة المرور</label>
-          <input
-            v-model="password"
-            type="password"
-            required
-            minlength="6"
-            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-          />
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            كلمة المرور <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <PasswordInput v-model="password" required :minlength="6" />
         </div>
         <div>
-          <label class="block text-sm font-medium text-brand-blue-700 mb-1">الاسم الكامل</label>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            الاسم الكامل <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
           <input
             v-model="fullName"
             type="text"
@@ -36,7 +36,33 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-brand-blue-700 mb-1">سنة التخرج</label>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            تاريخ الميلاد <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <input
+            v-model="birthDate"
+            type="date"
+            required
+            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            فصيلة الدم <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <select
+            v-model="bloodType"
+            required
+            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+          >
+            <option value="" disabled>اختر فصيلة الدم</option>
+            <option v-for="type in bloodTypes" :key="type" :value="type">{{ type }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            سنة التخرج <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
           <input
             v-model="graduationYear"
             type="number"
@@ -48,17 +74,94 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-brand-blue-700 mb-1">رقم الهاتف الذي يحتوي على الواتساب</label>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            رقم الهاتف الذي يحتوي على الواتساب مع رمز الدولة <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
           <input
             v-model="phone"
             type="tel"
             required
             class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
-            placeholder="05xxxxxxxx"
+            placeholder="+213xxxxxxxxx"
           />
         </div>
         <div>
-          <label class="block text-sm font-medium text-brand-blue-700 mb-1">صورة لقسم المعلومات في كشف الدرجات (Transcript)</label>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            التخصص الجامعي <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <input
+            v-model="uniSpecialization"
+            type="text"
+            required
+            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+            placeholder="مثال: طب"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            السنة الدراسية الجامعية <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <input
+            v-model="uniYear"
+            type="text"
+            required
+            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+            placeholder="مثال: السنة الثالثة"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            مكان الجامعة <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
+          <input
+            v-model="uniPlace"
+            type="text"
+            required
+            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+            placeholder="مثال: جامعة الجزائر 1"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">المسمى الوظيفي <span class="text-brand-blue-400">(اختياري)</span></label>
+          <input
+            v-model="jobTitle"
+            type="text"
+            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+            placeholder="مثال: مهندس برمجيات"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">مكان العمل <span class="text-brand-blue-400">(اختياري)</span></label>
+          <input
+            v-model="workplace"
+            type="text"
+            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+            placeholder="مثال: شركة تقنية"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">المهارات <span class="text-brand-blue-400">(اختياري)</span></label>
+          <input
+            v-model="skills"
+            type="text"
+            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent"
+            placeholder="مثال: برمجة، تصميم، رياضة.."
+          />
+          <p class="text-xs text-brand-blue-500 mt-1">افصل بين المهارات بفاصلة</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">ملاحظات <span class="text-brand-blue-400">(اختياري)</span></label>
+          <textarea
+            v-model="notes"
+            rows="3"
+            class="w-full px-4 py-2 text-brand-blue-900 border border-brand-blue-200 rounded-lg focus:ring-2 focus:ring-brand-blue focus:border-transparent resize-y"
+            placeholder="أي معلومات إضافية تود مشاركتها"
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-brand-blue-700 mb-1">
+            صورة لقسم المعلومات في كشف الدرجات (Transcript) <span class="text-red-500" aria-hidden="true">*</span>
+          </label>
           <input
             type="file"
             accept="image/*,.pdf"
@@ -92,15 +195,27 @@ import {
   uploadTranscript,
   updateMyProfile,
 } from '../supabase'
+import PasswordInput from '../components/PasswordInput.vue'
 
 const router = useRouter()
 const auth = useAuthStore()
 
+const bloodTypes = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']
+
 const email = ref('')
 const password = ref('')
 const fullName = ref('')
+const birthDate = ref('')
+const bloodType = ref('')
 const graduationYear = ref('')
 const phone = ref('')
+const uniSpecialization = ref('')
+const uniYear = ref('')
+const uniPlace = ref('')
+const jobTitle = ref('')
+const workplace = ref('')
+const skills = ref('')
+const notes = ref('')
 const transcriptFile = ref(null)
 const error = ref('')
 const loading = ref(false)
@@ -111,6 +226,13 @@ const STEP_TIMEOUT_MS = 15000
 function onFileChange(e) {
   const file = e.target.files?.[0]
   transcriptFile.value = file || null
+}
+
+function parseSkills(value) {
+  return value
+    .split(',')
+    .map((skill) => skill.trim())
+    .filter(Boolean)
 }
 
 function timeoutPromise(ms, message) {
@@ -132,6 +254,7 @@ async function handleSignup() {
   }
   loading.value = true
   try {
+    const parsedSkills = skills.value ? parseSkills(skills.value) : []
     const signupFlow = (async () => {
       step.value = 'جاري إنشاء الحساب...'
       const { data: signUpData, error: signUpErr } = await withTimeout(
@@ -149,7 +272,6 @@ async function handleSignup() {
       if (!signUpData.session) {
         throw new Error('يبدو أن تفعيل البريد مطلوب. تحقق من بريدك واضغط الرابط ثم سجّل الدخول.')
       }
-      // Supabase sets the session automatically on signUp; no manual setSession.
 
       step.value = 'جاري حفظ الملف الشخصي...'
       const { error: profileErr } = await withTimeout(
@@ -160,6 +282,15 @@ async function handleSignup() {
           graduation_year: graduationYear.value,
           phone: phone.value.trim(),
           transcript_url: '',
+          birth_date: birthDate.value,
+          blood_type: bloodType.value,
+          uni_specialization: uniSpecialization.value.trim(),
+          uni_year: uniYear.value.trim(),
+          uni_place: uniPlace.value.trim(),
+          job_title: jobTitle.value.trim(),
+          workplace: workplace.value.trim(),
+          skills: parsedSkills,
+          notes: notes.value.trim(),
         }),
         STEP_TIMEOUT_MS,
         'انتهت المهلة عند حفظ الملف الشخصي. تحقق من اتصالك وإعدادات RLS في Supabase.'
@@ -197,6 +328,15 @@ async function handleSignup() {
         email: email.value.trim(),
         graduation_year: Number(graduationYear.value),
         phone: phone.value.trim(),
+        birth_date: birthDate.value,
+        blood_type: bloodType.value,
+        uni_specialization: uniSpecialization.value.trim(),
+        uni_year: uniYear.value.trim(),
+        uni_place: uniPlace.value.trim(),
+        job_title: jobTitle.value.trim() || null,
+        workplace: workplace.value.trim() || null,
+        skills: parsedSkills.length ? parsedSkills : null,
+        notes: notes.value.trim() || null,
         role: 'student',
         status: 'pending',
         transcript_url: publicUrl,

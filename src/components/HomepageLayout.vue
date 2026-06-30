@@ -2,7 +2,7 @@
   <div class="relative overflow-hidden bg-brand-blue-950 text-slate-100">
     <div
       class="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.12]"
-      :style="{ backgroundImage: `url(${bannerImage})` }"
+      :style="{ backgroundImage: `url(${backgroundImage})` }"
     ></div>
     <div class="pointer-events-none absolute inset-0">
       <div class="absolute -top-24 left-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-brand-blue-500/25 blur-3xl"></div>
@@ -17,5 +17,5 @@
 </template>
 
 <script setup>
-import bannerImage from '../assets/new/new-banner.jpeg'
+import backgroundImage from '../assets/new/new-background.jpeg'
 </script>

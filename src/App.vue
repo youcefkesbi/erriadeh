@@ -35,6 +35,13 @@
             الخدمات
           </router-link>
           <router-link
+            to="/contact"
+            class="hover:text-brand-blue-900"
+            :class="{ 'font-semibold text-brand-blue-900': $route.name === 'Contact' }"
+          >
+            تواصل معنا
+          </router-link>
+          <router-link
             :to="{ name: primaryLink.name }"
             class="px-3 py-1.5 rounded-lg bg-brand-blue text-white font-medium hover:bg-brand-blue-600"
           >
@@ -66,14 +73,14 @@
             <li><router-link to="/" class="hover:text-brand-blue-900">الرئيسية</router-link></li>
             <li><router-link to="/about" class="hover:text-brand-blue-900">من نحن</router-link></li>
             <li><router-link to="/services" class="hover:text-brand-blue-900">الخدمات</router-link></li>
-            <li><a href="#" class="hover:text-brand-blue-900">تواصل معنا</a></li>
+            <li><router-link to="/contact" class="hover:text-brand-blue-900">تواصل معنا</router-link></li>
           </ul>
         </div>
         <div>
           <h2 class="font-semibold text-brand-blue-800 mb-3">تابعنا</h2>
           <ul class="space-y-1">
-            <li><a href="#" class="hover:text-brand-blue-900">Facebook</a></li>
-            <li><a href="#" class="hover:text-brand-blue-900">Instagram</a></li>
+            <li><a href="https://www.facebook.com/share/1EHWjndywM/" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue-900">Facebook</a></li>
+            <li><a href="https://www.instagram.com/the_esaa1?igsh=cGJxZXNnYjIwZDk1" target="_blank" rel="noopener noreferrer" class="hover:text-brand-blue-900">Instagram</a></li>
           </ul>
         </div>
         <div class="md:text-left text-center md:flex md:flex-col md:items-end">

@@ -7,7 +7,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
+        sans: ['Lato', 'Tajawal', 'sans-serif'],
         arabic: ['Tajawal', 'sans-serif'],
+        latin: ['Lato', 'sans-serif'],
       },
       colors: {
         'brand-blue': {
